@@ -1,0 +1,8 @@
+新增：
+git init
+修改后提交到github.com的方法：
+git update  			//检查更新
+git add .			//将修改内容加入git	
+git commit -m "对提交的注释"	//提交到本地
+git push			//提交到github.com
+git status			//查看状态
