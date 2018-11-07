@@ -10,7 +10,7 @@ isfirst = True
 countDownTime = 0
 while True:
     c.get('http://fomoxdag.xdagpark.com/')
-    time.sleep(5)
+    time.sleep(10)
     
     comment = c.find_elements_by_class_name('color-pink')
     if isfirst:

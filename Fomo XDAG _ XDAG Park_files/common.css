@@ -1,0 +1,30 @@
+.site-title{
+    color: #FD7B7A;
+}
+
+.bg-color{
+    background: #F8FAFC;
+}
+
+.showborder{
+    border:1px solid red;
+}
+
+.color-pink{
+    color:#f98ca4;
+}
+
+.color-blue{
+    color:#52DADA;
+}
+
+
+footer{
+    margin-top:80px;
+    margin-bottom:20px;
+    color:#F8FAFC;
+}
+
+[v-cloak] {
+    display: none;
+}

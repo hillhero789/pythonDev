@@ -513,3 +513,105 @@ JavaScript error: resource://gre/modules/WebProgressChild.jsm, line 58: TypeErro
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
 [GPU 10784, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1541466183685	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.FY9aidVPLIge"
+1541466186647	Marionette	INFO	Listening on port 49616
+1541466186987	Marionette	WARN	TLS certificate errors will be ignored for this session
+[Child 1948, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 6312, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 6312, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 6940, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 6704, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 6940, Gecko_IOThread] WARNING: file z:/build/build/src/ipc/chromium/src/base/process_util_win.cc, line 188
+1541483003349	Marionette	INFO	Stopped listening on port 49616
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+[GPU 6716, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1541483199676	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.vabxoCf9aTR9"
+1541483208535	Marionette	INFO	Listening on port 49197
+1541483208675	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+[Parent 5448, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 5448, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 5188, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1541514727950	Marionette	INFO	Stopped listening on port 49197
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+[GPU 5908, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1541516102950	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.cww5tvFPJFrh"
+1541516104987	Marionette	INFO	Listening on port 57835
+1541516105093	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://fomoxdag.xdagpark.com/, line 175: TypeError: $(...).tooltip is not a function
+JavaScript error: http://fomoxdag.xdagpark.com/, line 418: TypeError: $(...).tooltip is not a function
+1541522868636	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.pwWN3KGunmnf"
+1541522870511	Marionette	INFO	Listening on port 59376
+1541522870854	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+1541548871989	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.buXeoDaoE6lJ"
+1541548873682	Marionette	INFO	Listening on port 65256
+1541548874164	Marionette	WARN	TLS certificate errors will be ignored for this session
+[Child 2512, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 3888, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 2512, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+[Child 4356, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 4356, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 5668, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 3888, Gecko_IOThread] WARNING: file z:/build/build/src/ipc/chromium/src/base/process_util_win.cc, line 188
+1541548878705	Marionette	INFO	Stopped listening on port 65256
+[GPU 7836, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+
+1541548915686	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.Racf3IuS3RXs"
+1541548917415	Marionette	INFO	Listening on port 65362
+1541548917886	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
+JavaScript error: http://fomoxdag.xdagpark.com/, line 271: TypeError: data is undefined
