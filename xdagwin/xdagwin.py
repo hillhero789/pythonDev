@@ -14,6 +14,7 @@ stakeAmount = [10.0,100.99]
 unmatchBet = []      #元素0为传输哈希，元素1为数量
 matchBet = []     
 allInputTxs = []
+allOutputTxs = []
 newAllInputTxs = []
 txsLatest = []
 pageAddr = 'https://explorer.xdag.io/block/SNiOG7aUUyZ3QmSl87T0CsUezb5C5l5X'
@@ -48,12 +49,15 @@ def getRecentTx(direction, paraTxs, href):#获取某个地址最近一笔交易
                         paraTxs.append(tds[i+3].get_text().strip())
                         break
 
-def getInputWalletAddr(txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
+def getWalletAddr(direction, txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
         res = requests.get(explorerAddr + txHash)
         res.encoding = 'utf-8'
         soup = BeautifulSoup(res.text,"html.parser")
         tds = soup.tbody.find_all('td')
-        return tds[4].get_text().strip()
+        if direction == 'Input':
+                return tds[4].get_text().strip()
+        else:
+                return tds[10].get_text().strip()
 
 def getNewInputTxs(topTxHash):#获取当前最新传输哈希值以后新交易
         res = requests.get(pageAddr)
@@ -91,11 +95,42 @@ def getMatchAndUnmatchBet(paraTxs):
                         matchBet.append(tmpStr)
                 i -= 4
 
-def checkIfFinished(paraMatchBet):#获取所有output交易，判断是否是转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
+def checkIfReward(paraMatchBet, paraOutputTxs, href):#获取所有output交易，判断是否是转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
+        t1 = []
+        tmpWalletAddr = ''
+        i = 0
+        j = 0
+        k = 0
+        while True:
+                getAllTxs('Output', paraOutputTxs, href) 
+                getRecentTx('Output', t1, href)
+                if t1[1] == paraOutputTxs[1]:   #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
+                        break
         
+        for j in range(0, len(paraOutputTxs)-2, 2): #把输出交易表中的交易哈希转化为钱包地址
+                paraOutputTxs[j] = getWalletAddr('Output', paraOutputTxs[j])
+
+        for i in range(0, len(paraMatchBet)-3, 3):#############################################
+                if paraMatchBet[i+2] == 'winner':
+                        try:
+                                tmpWalletAddr = getWalletAddr('Input', paraMatchBet[i])
+                                k = paraOutputTxs.index(tmpWalletAddr)
+                                while True:
+                                        if paraOutputTxs[k+1] == paraMatchBet[i+1]:
+                                                paraOutputTxs.pop(k)
+                                                paraOutputTxs.pop(k)
+                                                break
+                                        else:
+                                                k = paraOutputTxs.index(tmpWalletAddr, k+1)
+                                                
+                        except ValueError:
+                                doXfer(tmpWalletAddr, paraMatchBet[i+1])
+                                
+                        
+                        
         return None
 
-def doXfer(walletAddr):#向胜利者发送XDAG
+def doXfer(walletAddr, ammount):#向胜利者发送XDAG
 
         return None
 
@@ -115,7 +150,7 @@ while True:     #获取所有交易数据
                 break
 
 
-getMatchAndUnmatchBet(allInputTxs)      #将匹配与不匹配交易进行记录
+getMatchAndUnmatchBet(allInputTxs)      #将匹配与未匹配交易进行记录
 
 
 time.sleep(60)
