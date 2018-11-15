@@ -17,7 +17,7 @@ allOutputTxs = []       #[direction，哈希，数量，时间，...]
 newAllInputTxs = []     #获取最新输入交易
 newAllOutputTxs = []    #获取最新输出交易
 txsLatestDict = {'Input': '', 'Output': ''}        
-pageAddr = 'https://explorer.xdag.io/block/Sb3KmdbVj5uGl0FZX/ah0qbXGgEfW5pM'
+pageAddr = 'https://explorer.xdag.io/block/dvNo7wYcVz4zl6qRUy+twdFZv7vIJiuW'
 explorerAddr =  'https://explorer.xdag.io/block/'
 
 def getPageData(href,tryTimes = 2):#增加错误处理，连接错误时可尝试多次，最终失败则返回空字符串
