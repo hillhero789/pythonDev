@@ -2,8 +2,7 @@
 # # -*- coding: utf-8 -*-
 import requests
 from bs4 import BeautifulSoup  
-import gc
-import re
+import os
 import time
 
 makerFee = 0.00
@@ -18,7 +17,7 @@ allOutputTxs = []       #[direction，哈希，数量，时间，...]
 newAllInputTxs = []     #获取最新输入交易
 newAllOutputTxs = []    #获取最新输出交易
 txsLatestDict = {'Input': '', 'Output': ''}        
-pageAddr = 'https://explorer.xdag.io/block/SNiOG7aUUyZ3QmSl87T0CsUezb5C5l5X'
+pageAddr = 'https://explorer.xdag.io/block/Sb3KmdbVj5uGl0FZX/ah0qbXGgEfW5pM'
 explorerAddr =  'https://explorer.xdag.io/block/'
 
 def getPageData(href,tryTimes = 2):#增加错误处理，连接错误时可尝试多次，最终失败则返回空字符串
@@ -29,8 +28,8 @@ def getPageData(href,tryTimes = 2):#增加错误处理，连接错误时可尝�
                         res = requests.get(href)
                         break
                 except requests.exceptions.ConnectionError:
-                        print('Get ' + href + ' data error for ' + str(i+1) + 'time.')
-                        next
+                        print('Get ' + href + ' data error for ' + str(i+1) + ' time.')
+                        res = None
         return res
 
 def getAllTxs(paraInputTxs, paraOutputTxs, href):#获取某个地址所有交易direction 为Input 或 Output，paraTxs为外部传入字符串list用于返回计算结果
@@ -38,21 +37,23 @@ def getAllTxs(paraInputTxs, paraOutputTxs, href):#获取某个地址所有交易
         res.encoding = 'utf-8'
         soup = BeautifulSoup(res.text,"html.parser")
         tds = soup.tbody.find_all('td')
-        for i in range(0, len(tds) - 2,4):
-                if tds[i].get_text().strip() == 'Input': 
-                        paraInputTxs.append(tds[i].get_text().strip())
-                        paraInputTxs.append(tds[i+1].get_text().strip())
-                        paraInputTxs.append(tds[i+2].get_text().strip())
-                        paraInputTxs.append(tds[i+3].get_text().strip())
-                elif tds[i].get_text().strip() == 'Output':
-                        paraOutputTxs.append(tds[i].get_text().strip())
-                        paraOutputTxs.append(tds[i+1].get_text().strip())
-                        paraOutputTxs.append(tds[i+2].get_text().strip())
-                        paraOutputTxs.append(tds[i+3].get_text().strip())
+        if tds is not None:
+                for i in range(0, len(tds) - 2,4):
+                        if tds[i].get_text().strip() == 'Input': 
+                                paraInputTxs.append(tds[i].get_text().strip())
+                                paraInputTxs.append(tds[i+1].get_text().strip())
+                                paraInputTxs.append(tds[i+2].get_text().strip())
+                                paraInputTxs.append(tds[i+3].get_text().strip())
+                        elif tds[i].get_text().strip() == 'Output':
+                                paraOutputTxs.append(tds[i].get_text().strip())
+                                paraOutputTxs.append(tds[i+1].get_text().strip())
+                                paraOutputTxs.append(tds[i+2].get_text().strip())
+                                paraOutputTxs.append(tds[i+3].get_text().strip())
                         
         newHref = soup.find(text = "Next")
-        if 'https' in newHref.parent['href']:
-                getAllTxs(paraInputTxs, paraOutputTxs, newHref.parent['href'])
+        if newHref is not None:
+                if 'https' in newHref.parent['href']:
+                        getAllTxs(paraInputTxs, paraOutputTxs, newHref.parent['href'])
 
 def getLatestTx(paraTxsDict, href):#获取最近一笔Input 和 Output 的哈希
         hasGetInput = False
@@ -61,25 +62,29 @@ def getLatestTx(paraTxsDict, href):#获取最近一笔Input 和 Output 的哈希
         res.encoding = 'utf-8'
         soup = BeautifulSoup(res.text,"html.parser")
         tds = soup.tbody.find_all('td')
-        for i in range(0, len(tds) - 2,4):
-                if tds[i].get_text().strip() == 'Input' and not hasGetInput: 
-                        paraTxsDict['Input'] = tds[i+1].get_text().strip()
-                        hasGetInput = True
-                elif tds[i].get_text().strip() == 'Output' and not hasGetOutput:
-                        paraTxsDict['Output'] = tds[i+1].get_text().strip()
-                        hasGetOutput = True
-                elif hasGetInput and hasGetOutput:
-                        break
+        if tds is not None:
+                for i in range(0, len(tds) - 2,4):
+                        if tds[i].get_text().strip() == 'Input' and not hasGetInput: 
+                                paraTxsDict['Input'] = tds[i+1].get_text().strip()
+                                hasGetInput = True
+                        elif tds[i].get_text().strip() == 'Output' and not hasGetOutput:
+                                paraTxsDict['Output'] = tds[i+1].get_text().strip()
+                                hasGetOutput = True
+                        elif hasGetInput and hasGetOutput:
+                                break
 
 def getWalletAddr(direction, txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
         res = getPageData(explorerAddr + txHash)
         res.encoding = 'utf-8'
         soup = BeautifulSoup(res.text,"html.parser")
         tds = soup.tbody.find_all('td')
-        if direction == 'Input':
-                return tds[4].get_text().strip()
+        if tds is not None:
+                if direction == 'Input':
+                        return tds[4].get_text().strip()
+                else:
+                        return tds[10].get_text().strip()
         else:
-                return tds[10].get_text().strip()
+                return None
 
 def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInputTxs为输入交易列表
         tmpHash = ''
@@ -110,12 +115,14 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                 i -= 4
 
 def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否已转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
+        if paraMatchBet == []:
+                return
         tmpWalletAddr = ''
         i = 0
         j = 0
         k = 0
         tmpOutputTxs = paraOutputTxs.copy()
-        for j in range(0, len(tmpOutputTxs)-4, 4): #把输出交易表中的交易哈希转化为钱包地址
+        for j in range(0, len(tmpOutputTxs), 4): #把输出交易表中的交易哈希转化为钱包地址
                 tmpOutputTxs[j+1] = getWalletAddr('Output', tmpOutputTxs[j+1])
 
         for i in range(0, len(paraMatchBet), 3):
@@ -142,8 +149,11 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
 #需注意防止一个钱包赢了后多次向其转账，因为区块浏览器会有延迟，转账后没有那么快到账。
 #可以通过返回的哈希值，再查询区块浏览器是否已经完成来确认
 def doXfer(walletAddr, ammount):#向胜利者发送XDAG
-        print('xfer ' + ammount +' to ' + walletAddr)#for test
-        return None
+        #print('xfer ' + float(ammount)*1.975 +' to ' + walletAddr)#for test
+        #resultStr = os.system
+        resultStr = os.popen(r'd:\curl\bin\curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str(float(ammount)*2) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
+        if resultStr.find("result") == -1:
+                print("\nxfer failed: Need to transfer " + str(float(ammount)*2) + " to " + walletAddr)
 
 def calTxVal(paraTxHash):#计算传输哈希值
         s = 0 
@@ -161,50 +171,40 @@ def getNewInputTxs(topTxHash):#获取当前最新传输哈希值以后新交易�
         for newTx in lastTx.parent.previous_siblings:   #此方法无法获取之前的哈希值
                 print(newTx)
 
-
-
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空
 while True:     #获取所有交易数据
         getAllTxs(allInputTxs, allOutputTxs, pageAddr) 
         getLatestTx(txsLatestDict,pageAddr)
-        if txsLatestDict['Input'] == allInputTxs[1] and txsLatestDict['Output'] == allOutputTxs[1]:      #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
+        if allInputTxs == []:   #空表示无交易，继续等待
+                continue
+        if txsLatestDict['Input'] == allInputTxs[1] and (allOutputTxs == [] or txsLatestDict['Output'] == allOutputTxs[1]):      #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
                 break
 
 
-#getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
-#reward(allOutputTxs,matchBet)
-
-#以下测试用:
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allInputTxs.pop(0)
-allOutputTxs = []
-#以上测试用
+getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
+reward(allOutputTxs,matchBet)
 
 oldTxTopIndex = 1
 oldTxTopHash = allInputTxs[1]
 while True:
         while True:
-                del(newAllInputTxs[:])
-                del(newAllOutputTxs[:])
+                del(newAllInputTxs[:])  #清空
+                del(newAllOutputTxs[:]) #清空
                 getAllTxs(newAllInputTxs, newAllOutputTxs, pageAddr)
                 getLatestTx(txsLatestDict, pageAddr)
-                if txsLatestDict['Input'] == newAllInputTxs[1] and txsLatestDict['Output'] == newAllOutputTxs[1]:   #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
+                if newAllInputTxs == []:   #空表示无交易，继续等待
+                        continue
+                if txsLatestDict['Input'] == newAllInputTxs[1] and (newAllOutputTxs == [] or txsLatestDict['Output'] == newAllOutputTxs[1]):   #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
                         break
 
         oldTxTopIndex = newAllInputTxs.index(oldTxTopHash)
         if oldTxTopIndex == 1:
-                next
+                continue
         else:
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], matchBet, unmatchBet)      #将匹配与未匹配交易进行记录
                 reward(allOutputTxs, matchBet)
         oldTxTopHash = newAllInputTxs[1]
-        #time.sleep(120)
+        #time.sleep(10)
         
                 
 
