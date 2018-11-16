@@ -33,6 +33,7 @@ table.gridtable td {
 	background-color: #ffffff;
 }
 </style>
+<meta http-equiv="refresh" content="60"> 
 </head>
 
 <body>

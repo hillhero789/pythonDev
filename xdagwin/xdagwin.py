@@ -180,6 +180,16 @@ def getNewInputTxs(topTxHash):#获取当前最新传输哈希值以后新交易�
         for newTx in lastTx.parent.previous_siblings:   #此方法无法获取之前的哈希值
                 print(newTx)
 
+def refreshPage():
+        htmlContents = ''
+        f = open(filepath,'w+')
+        for i in range(0,len(unmatchBet),2):
+                htmlContents = htmlContents + r'<tr><td>' +unmatchBet[i] + r'</td><td>' + str(calTxVal(unmatchBet[i])) + r'</td><td>' + unmatchBet[i+1] + r'</td></tr>'
+        f.write(htmlCodes.header)
+        f.writelines(htmlContents)
+        f.write(htmlCodes.footer)
+        f.close()
+
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空
 while True:     #获取所有交易数据
         getAllTxs(allInputTxs, allOutputTxs, pageAddr) 
@@ -192,14 +202,7 @@ while True:     #获取所有交易数据
 
 getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
 reward(allOutputTxs,matchBet)
-htmlContents = ''
-f = open(filepath,'w+')
-for i in range(0,len(unmatchBet),2):
-        htmlContents = htmlContents + r'<tr><td>' +unmatchBet[i] + r'</td><td>' + str(calTxVal(unmatchBet[i])) + r'</td><td>' + unmatchBet[i+1] + r'</td></tr>'
-f.write(htmlCodes.header)
-f.writelines(htmlContents)
-f.write(htmlCodes.footer)
-f.close()
+refreshPage()
 
 oldTxTopIndex = 1
 oldTxTopHash = allInputTxs[1]
@@ -220,14 +223,7 @@ while True:
         else:
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], matchBet, unmatchBet)      #将匹配与未匹配交易进行记录
                 reward(allOutputTxs, matchBet)
-                f = open(filepath,'w+')
-                for i in range(len(unmatchBet)):
-                        if i % 2 != 0:
-                                unmatchBet[i] = unmatchBet[i] + '<br>\n'
-                        else:
-                                unmatchBet[i] = unmatchBet[i] + '\t'
-                f.writelines(unmatchBet)
-                f.close()
+                refreshPage()
         oldTxTopHash = newAllInputTxs[1]
         #time.sleep(10)
         
