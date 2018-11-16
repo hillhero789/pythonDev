@@ -4,10 +4,14 @@ import requests
 from bs4 import BeautifulSoup  
 import os
 import time
+import json
+import htmlCodes
 
 makerFee = 0.00
 takerFee = 0.05
+fee = 0.0
 stakeAmount = [10.0,100.99]
+filepath = r'C:\webserver\html\index.html'
 #以上参数需要提前设置
 
 unmatchBet = []         #[传输哈希，数量，...]
@@ -131,7 +135,7 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                                 tmpWalletAddr = getWalletAddr('Input', paraMatchBet[i])
                                 k = tmpOutputTxs.index(tmpWalletAddr)
                                 while True:
-                                        if tmpOutputTxs[k+1] == paraMatchBet[i+1]:#找到钱包地址一致，且数量一致，则证明已完成
+                                        if float(tmpOutputTxs[k+1]) == float(paraMatchBet[i+1])*2.0*(1-fee):#找到钱包地址一致，且数量一致，则证明已完成
                                                 tmpOutputTxs.pop(k-1)             #防止一个钱包相同金额赢了多次，不给转账
                                                 tmpOutputTxs.pop(k-1)
                                                 tmpOutputTxs.pop(k-1)
@@ -140,7 +144,7 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                                         else:
                                                 k = tmpOutputTxs.index(tmpWalletAddr, k+1)#如果钱包地址一致，金额不一致，则继续向后查找，找不到了，则转账        
                         except ValueError:
-                                doXfer(tmpWalletAddr, paraMatchBet[i+1])
+                                doXfer(tmpWalletAddr, float(paraMatchBet[i+1])*2*(1-fee))
 
         del(paraMatchBet[:])       #清空matchBet列表
 
@@ -148,12 +152,17 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
 
 #需注意防止一个钱包赢了后多次向其转账，因为区块浏览器会有延迟，转账后没有那么快到账。
 #可以通过返回的哈希值，再查询区块浏览器是否已经完成来确认
-def doXfer(walletAddr, ammount):#向胜利者发送XDAG
+def doXfer(walletAddr, ammount):#向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('xfer ' + float(ammount)*1.975 +' to ' + walletAddr)#for test
         #resultStr = os.system
-        resultStr = os.popen(r'd:\curl\bin\curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str(float(ammount)*2) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
+        resultStr = os.popen(r'd:\curl\bin\curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str(ammount) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
+
         if resultStr.find("result") == -1:
-                print("\nxfer failed: Need to transfer " + str(float(ammount)*2) + " to " + walletAddr)
+                print("\nxfer failed: Need to transfer " + str(ammount) + " to " + walletAddr)
+                return None
+        else:
+                resultDict = json.loads(resultStr)
+                return resultDict['result'][0]['block']
 
 def calTxVal(paraTxHash):#计算传输哈希值
         s = 0 
@@ -183,6 +192,14 @@ while True:     #获取所有交易数据
 
 getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
 reward(allOutputTxs,matchBet)
+htmlContents = ''
+f = open(filepath,'w+')
+for i in range(0,len(unmatchBet),2):
+        htmlContents = htmlContents + r'<tr><td>' +unmatchBet[i] + r'</td><td>' + str(calTxVal(unmatchBet[i])) + r'</td><td>' + unmatchBet[i+1] + r'</td></tr>'
+f.write(htmlCodes.header)
+f.writelines(htmlContents)
+f.write(htmlCodes.footer)
+f.close()
 
 oldTxTopIndex = 1
 oldTxTopHash = allInputTxs[1]
@@ -203,6 +220,14 @@ while True:
         else:
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], matchBet, unmatchBet)      #将匹配与未匹配交易进行记录
                 reward(allOutputTxs, matchBet)
+                f = open(filepath,'w+')
+                for i in range(len(unmatchBet)):
+                        if i % 2 != 0:
+                                unmatchBet[i] = unmatchBet[i] + '<br>\n'
+                        else:
+                                unmatchBet[i] = unmatchBet[i] + '\t'
+                f.writelines(unmatchBet)
+                f.close()
         oldTxTopHash = newAllInputTxs[1]
         #time.sleep(10)
         
