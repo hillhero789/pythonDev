@@ -215,8 +215,9 @@ refreshPage()
 reward(allOutputTxs,matchBet)
 
 
-oldTxTopIndex = 1
-oldTxTopHash = allInputTxs[1]
+oldInputTxTopIndex = 1
+oldInputTxTopHash = allInputTxs[1]
+
 while True:
         while True:
                 del(newAllInputTxs[:])  #清空
@@ -228,17 +229,17 @@ while True:
                 if txsLatestDict['Input'] == newAllInputTxs[1] and (newAllOutputTxs == [] or txsLatestDict['Output'] == newAllOutputTxs[1]):   #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
                         break
 
-        oldTxTopIndex = newAllInputTxs.index(oldTxTopHash)
-        if oldTxTopIndex == 1:
+        oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
+        if oldInputTxTopIndex == 1:
                 continue
         else:
-                getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
-                reward(allOutputTxs, newMatchBet)
+                getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
+                reward([], newMatchBet)                 #由于新的匹配交易，不可能有已经被支付过，所以reward第一个参数为空
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)
                 del(newMatchBet[:])
                 if len(matchBet)>30:
                         del(matchBet[0:len(matchBet)-30])
                 refreshPage()
-        oldTxTopHash = newAllInputTxs[1]
+        oldInputTxTopHash = newAllInputTxs[1]
         #time.sleep(10)
