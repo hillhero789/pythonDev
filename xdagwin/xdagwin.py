@@ -155,7 +155,7 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
 def doXfer(walletAddr, ammount):#向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('xfer ' + float(ammount)*1.975 +' to ' + walletAddr)#for test
         #resultStr = os.system
-        resultStr = os.popen(r'curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str('%f'%(ammount)) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
+        resultStr = os.popen(r'curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str('%.9f'%(ammount)) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
 
         if resultStr.find("result") == -1:
                 print("\nxfer failed: Need to transfer " + str(ammount) + " to " + walletAddr)
