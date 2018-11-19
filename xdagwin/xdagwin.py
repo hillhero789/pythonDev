@@ -155,7 +155,7 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
 def doXfer(walletAddr, ammount):#向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('xfer ' + float(ammount)*1.975 +' to ' + walletAddr)#for test
         #resultStr = os.system
-        resultStr = os.popen(r'd:\curl\bin\curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str(ammount) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
+        resultStr = os.popen(r'curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"' + str('%f'%(ammount)) + r'\", \"address\":\"' + walletAddr + r'\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888').read()
 
         if resultStr.find("result") == -1:
                 print("\nxfer failed: Need to transfer " + str(ammount) + " to " + walletAddr)
@@ -181,12 +181,21 @@ def getNewInputTxs(topTxHash):#获取当前最新传输哈希值以后新交易�
                 print(newTx)
 
 def refreshPage():
-        htmlContents = ''
-        f = open(filepath,'w+')
+        unmatchBetTableBody = ''
+        matchBetTalbeBody = ''
+        
         for i in range(0,len(unmatchBet),2):
-                htmlContents = htmlContents + r'<tr><td>' +unmatchBet[i] + r'</td><td>' + str(calTxVal(unmatchBet[i])) + r'</td><td>' + unmatchBet[i+1] + r'</td></tr>'
+                unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +unmatchBet[i] + r'</td><td>' + str(calTxVal(unmatchBet[i])) + r'</td><td>' + unmatchBet[i+1] + r'</td></tr>'
+
+        for i in range(len(matchBet)-3, max(0,len(matchBet)-33),-3):
+                matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + getWalletAddr('Input', matchBet[i]) + r'</td><td>' + matchBet[i] + r'</td><td>' + str(calTxVal(matchBet[i])) + r'</td><td>' + matchBet[i+1] + r'</td><td>' + matchBet[i+2] + r'</td></tr>'
+
+        f = open(filepath,'w+')
         f.write(htmlCodes.header)
-        f.writelines(htmlContents)
+        f.write(unmatchBetTableBody)
+        f.write(htmlCodes.tableFooter)
+        f.write(htmlCodes.tableHeader)
+        f.write(matchBetTalbeBody)
         f.write(htmlCodes.footer)
         f.close()
 
@@ -201,8 +210,9 @@ while True:     #获取所有交易数据
 
 
 getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
-reward(allOutputTxs,matchBet)
 refreshPage()
+reward(allOutputTxs,matchBet)
+
 
 oldTxTopIndex = 1
 oldTxTopHash = allInputTxs[1]
@@ -222,34 +232,8 @@ while True:
                 continue
         else:
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], matchBet, unmatchBet)      #将匹配与未匹配交易进行记录
-                reward(allOutputTxs, matchBet)
                 refreshPage()
+                reward(allOutputTxs, matchBet)
+                
         oldTxTopHash = newAllInputTxs[1]
         #time.sleep(10)
-        
-                
-
-
-
-
-
-
-
-
-
-
-'''
-if newAllInputTxs[1] == allInputTxs[1]:
-        time.sleep(60)
-else:
-        try:
-                ptr = newAllInputTxs.index(allInputTxs[1])
-        except ValueError:
-                ptr = 1 
-        if ptr != 1:
-                for i in range(ptr-4, 0, -4):
-                        unmatchBet.append(newAllInputTxs[i])
-                        unmatchBet.append(newAllInputTxs[i+1])
-
-#getNewInputTxs('\n\t\t\t\t\t\t\t' + allInputTxs[9] + '\n\t\t\t\t\t\t')
-'''
