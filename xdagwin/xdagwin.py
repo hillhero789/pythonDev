@@ -16,6 +16,7 @@ filepath = r'/var/www/html/index.html'
 
 unmatchBet = []         #[传输哈希，数量，...]
 matchBet = []           #[传输哈希，数量，winner or loser，...]
+newMatchBet = []        
 allInputTxs = []        #[direction，哈希，数量，时间，...]
 allOutputTxs = []       #[direction，哈希，数量，时间，...]
 newAllInputTxs = []     #获取最新输入交易
@@ -146,7 +147,7 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                         except ValueError:
                                 doXfer(tmpWalletAddr, float(paraMatchBet[i+1])*2*(1-fee))
 
-        del(paraMatchBet[:])       #清空matchBet列表
+        #del(paraMatchBet[:])       #清空matchBet列表
 
                                 
 
@@ -231,9 +232,13 @@ while True:
         if oldTxTopIndex == 1:
                 continue
         else:
-                getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], matchBet, unmatchBet)      #将匹配与未匹配交易进行记录
+                getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
+                reward(allOutputTxs, newMatchBet)
+                for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
+                        matchBet.append(newMatchBetItem)
+                del(newMatchBet[:])
+                if len(matchBet)>30:
+                        del(matchBet[0:len(matchBet)-30])
                 refreshPage()
-                reward(allOutputTxs, matchBet)
-                
         oldTxTopHash = newAllInputTxs[1]
         #time.sleep(10)
