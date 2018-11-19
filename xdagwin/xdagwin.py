@@ -11,7 +11,7 @@ makerFee = 0.00
 takerFee = 0.05
 fee = 0.0
 stakeAmount = [10.0,100.99]
-filepath = r'C:\webserver\html\index.html'
+filepath = r'/var/www/html/index.html'
 #以上参数需要提前设置
 
 unmatchBet = []         #[传输哈希，数量，...]
