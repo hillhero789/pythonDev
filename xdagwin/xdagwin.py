@@ -15,10 +15,10 @@ filepath = r'/var/www/html/index.html'
 #以上参数需要提前设置
 
 unmatchBet = []         #[传输哈希，数量，...]
-matchBet = []           #[传输哈希，数量，winner or loser，...]
+matchBet = []           #[wallet, 传输哈希，数量，winner or loser，...]
 newMatchBet = []        
 allInputTxs = []        #[direction，哈希，数量，时间，...]
-allOutputTxs = []       #[direction，哈希，数量，时间，...]
+allOutputTxs = []       #[wallet，哈希，数量，时间，...]
 newAllInputTxs = []     #获取最新输入交易
 newAllOutputTxs = []    #获取最新输出交易
 txsLatestDict = {'Input': '', 'Output': ''}        
@@ -105,7 +105,8 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                         paraUnmatchBet.append(paraInputTxs[i])
                         paraUnmatchBet.append(paraInputTxs[i+1])
                 else:
-                        tmpHash = paraUnmatchBet.pop(j-1)
+                        tmpHash = paraUnmatchBet.pop(j-1)       #将原来在不匹配列表中的数据加入到匹配列表
+                        paraMatchBet.append('')                 #钱包地址暂时为空
                         paraMatchBet.append(tmpHash)
                         paraMatchBet.append(paraUnmatchBet.pop(j-1))
                         if calTxVal(tmpHash) < calTxVal(paraInputTxs[i]):
@@ -114,6 +115,8 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                         else:
                                 paraMatchBet.append('winner')
                                 tmpStr = 'loser'
+
+                        paraMatchBet.append('')                 #将inputTxs中的数据加入到匹配列表，钱包地址暂时为空
                         paraMatchBet.append(paraInputTxs[i])
                         paraMatchBet.append(paraInputTxs[i+1])
                         paraMatchBet.append(tmpStr)
@@ -126,17 +129,21 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
         i = 0
         j = 0
         k = 0
+        
+        for j in range(0, len(paraOutputTxs), 4): #把输出交易表中的交易哈希转化为钱包地址
+                paraOutputTxs[j] = getWalletAddr('Output', paraOutputTxs[j+1])   #把钱包地址填入outputTxs
         tmpOutputTxs = paraOutputTxs.copy()
-        for j in range(0, len(tmpOutputTxs), 4): #把输出交易表中的交易哈希转化为钱包地址
-                tmpOutputTxs[j+1] = getWalletAddr('Output', tmpOutputTxs[j+1])
 
-        for i in range(0, len(paraMatchBet), 3):
-                if paraMatchBet[i+2] == 'winner':
+        for i in range(0, len(paraMatchBet), 4):
+                tmpWalletAddr = getWalletAddr('Input', paraMatchBet[i+1])
+                paraMatchBet[i] = tmpWalletAddr                 #将matchBet中的钱包地址填入
+                if paraMatchBet[i+3] == 'winner':
                         try:
-                                tmpWalletAddr = getWalletAddr('Input', paraMatchBet[i])
+                                #tmpWalletAddr = getWalletAddr('Input', paraMatchBet[i+1])
+                                #paraMatchBet[i] = tmpWalletAddr                 
                                 k = tmpOutputTxs.index(tmpWalletAddr)
                                 while True:
-                                        if float(tmpOutputTxs[k+1]) == float(paraMatchBet[i+1])*2.0*(1-fee):#找到钱包地址一致，且数量一致，则证明已完成
+                                        if float(tmpOutputTxs[k+2]) == float(paraMatchBet[i+2])*2.0*(1-fee):#找到钱包地址一致，且数量一致，则证明已完成
                                                 tmpOutputTxs.pop(k-1)             #防止一个钱包相同金额赢了多次，不给转账
                                                 tmpOutputTxs.pop(k-1)
                                                 tmpOutputTxs.pop(k-1)
@@ -145,7 +152,7 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                                         else:
                                                 k = tmpOutputTxs.index(tmpWalletAddr, k+1)#如果钱包地址一致，金额不一致，则继续向后查找，找不到了，则转账        
                         except ValueError:
-                                doXfer(tmpWalletAddr, float(paraMatchBet[i+1])*2*(1-fee))
+                                doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee))
 
         #del(paraMatchBet[:])       #清空matchBet列表
 
@@ -181,15 +188,15 @@ def getNewInputTxs(topTxHash):#获取当前最新传输哈希值以后新交易�
         for newTx in lastTx.parent.previous_siblings:   #此方法无法获取之前的哈希值
                 print(newTx)
 
-def refreshPage():
+def refreshPage(paraUnmatchBet, paraMatchBet):
         unmatchBetTableBody = ''
         matchBetTalbeBody = ''
         
-        for i in range(0,len(unmatchBet),2):
-                unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +unmatchBet[i] + r'</td><td>' + str(calTxVal(unmatchBet[i])) + r'</td><td>' + unmatchBet[i+1] + r'</td></tr>'
+        for i in range(0,len(paraUnmatchBet),2):
+                unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +paraUnmatchBet[i] + r'</td><td>' + str(calTxVal(paraUnmatchBet[i])) + r'</td><td>' + paraUnmatchBet[i+1] + r'</td></tr>'
 
-        for i in range(len(matchBet)-3, max(0,len(matchBet)-33),-3):
-                matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + getWalletAddr('Input', matchBet[i]) + r'</td><td>' + matchBet[i] + r'</td><td>' + str(calTxVal(matchBet[i])) + r'</td><td>' + matchBet[i+1] + r'</td><td>' + matchBet[i+2] + r'</td></tr>'
+        for i in range(len(paraMatchBet)-4, max(0,len(paraMatchBet)-44),-4):
+                matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td><td>' + paraMatchBet[i+3] + r'</td></tr>'
 
         f = open(filepath,'w+')
         f.write(htmlCodes.header)
@@ -211,8 +218,9 @@ while True:     #获取所有交易数据
 
 
 getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
-refreshPage()
 reward(allOutputTxs,matchBet)
+refreshPage(unmatchBet, matchBet)
+
 
 
 oldInputTxTopIndex = 1
@@ -238,8 +246,8 @@ while True:
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)
                 del(newMatchBet[:])
-                if len(matchBet)>30:
-                        del(matchBet[0:len(matchBet)-30])
-                refreshPage()
+                if len(matchBet)>40:
+                        del(matchBet[0:len(matchBet)-40])
+                refreshPage(unmatchBet, makerFee)
         oldInputTxTopHash = newAllInputTxs[1]
         #time.sleep(10)

@@ -1,3 +1,4 @@
+import datetime
 header = """
 <html>
 <head>
@@ -55,7 +56,7 @@ If amount transfered is not equal to any of the amount listed below, than your t
 
 
 
-tableHeader = '''
+tableHeader = """
 <p>Recent results（近期结果）：</p>
 <table class="gridtable">
   <tr>
@@ -65,12 +66,8 @@ tableHeader = '''
 	<td>Amount（数量）</td>
 	<td>Result（结果）</td>
   </tr>
-'''
-tableFooter ='''
-</table>
-'''
-footer = """
-</table>
-</body>
-</html>
 """
+tableFooter ="""
+</table>
+"""
+footer = r'</table><p>' + str(datetime.datetime.now()) + r'</p></body></html>'
