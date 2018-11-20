@@ -1,4 +1,3 @@
-import datetime
 header = """
 <html>
 <head>
@@ -73,4 +72,3 @@ tableHeader = """
 tableFooter ="""
 </table>
 """
-footer = r'</table><p class="hideColor">' + str(datetime.datetime.now()) + r'</p></body></html>'

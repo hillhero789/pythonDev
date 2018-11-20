@@ -6,6 +6,7 @@ import os
 import time
 import json
 import htmlCodes
+import datetime
 
 makerFee = 0.00
 takerFee = 0.05
@@ -198,13 +199,14 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         for i in range(len(paraMatchBet)-4, max(0,len(paraMatchBet)-44),-4):
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td><td>' + paraMatchBet[i+3] + r'</td></tr>'
 
+        footer = r'</table><p class="hideColor">' + str(datetime.datetime.now()) + r'</p></body></html>'
         f = open(filepath,'w+')
         f.write(htmlCodes.header)
         f.write(unmatchBetTableBody)
         f.write(htmlCodes.tableFooter)
         f.write(htmlCodes.tableHeader)
         f.write(matchBetTalbeBody)
-        f.write(htmlCodes.footer)
+        f.write(footer)
         f.close()
 
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空

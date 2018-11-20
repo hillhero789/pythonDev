@@ -1,2 +1,0 @@
-curl -X POST --data "{\"method\":\"xdag_version\", \"params\":[], \"id\":1}" 127.0.0.1:8888
-curl -X POST --data "{\"method\":\"xdag_do_xfer\", \"params\":[{\"amount\":\"0.1\", \"address\":\"0vFAaFwfrh9vnwhXHm0zx3cDKqRJJtrR\", \"remark\":\"REMARK\"}], \"id\":1}" 127.0.0.1:8888
