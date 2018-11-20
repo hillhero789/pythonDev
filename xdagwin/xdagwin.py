@@ -248,6 +248,6 @@ while True:
                 del(newMatchBet[:])
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
-                refreshPage(unmatchBet, makerFee)
+                refreshPage(unmatchBet, matchBet)
         oldInputTxTopHash = newAllInputTxs[1]
         #time.sleep(10)
