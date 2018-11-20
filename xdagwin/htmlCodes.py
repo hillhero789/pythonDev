@@ -6,6 +6,9 @@ header = """
 <title></title>
 <style type="text/css">
 <!--
+.hideColor {
+	color: #ffffff
+}
 .STYLE1 {
 	color: #FF0000;
 	font-weight: bold;
@@ -70,4 +73,4 @@ tableHeader = """
 tableFooter ="""
 </table>
 """
-footer = r'</table><p>' + str(datetime.datetime.now()) + r'</p></body></html>'
+footer = r'</table><p class="hideColor">' + str(datetime.datetime.now()) + r'</p></body></html>'
