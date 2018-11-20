@@ -229,6 +229,8 @@ oldInputTxTopIndex = 1
 oldInputTxTopHash = allInputTxs[1]
 
 while True:
+        refreshPage(unmatchBet, matchBet)
+        time.sleep(30)
         while True:
                 del(newAllInputTxs[:])  #清空
                 del(newAllOutputTxs[:]) #清空
@@ -250,6 +252,6 @@ while True:
                 del(newMatchBet[:])
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
-                refreshPage(unmatchBet, matchBet)
+                #refreshPage(unmatchBet, matchBet)
         oldInputTxTopHash = newAllInputTxs[1]
-        #time.sleep(10)
+        
