@@ -171,6 +171,7 @@ def doXfer(walletAddr, ammount):#向胜利者发送XDAG       成功返回交易
                 return None
         else:
                 resultDict = json.loads(resultStr)
+                print('xfer success! '+ resultDict['result'][0]['block'])
                 return resultDict['result'][0]['block']
 
 def calTxVal(paraTxHash):#计算传输哈希值
