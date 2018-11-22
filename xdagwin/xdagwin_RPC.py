@@ -49,15 +49,16 @@ def getXdagRpcJson(url, body, attemptTimes = 5):
                 break
             else:
                 errorCounter += 1
+                print(str(datetime.datetime.now()) +' get data error for '+ str(errorCounter) +' times!')
                 if errorCounter >= attemptTimes:
-                    print('data error!')
+                    print(str(datetime.datetime.now()) +' get data ERROR!')
                     return None
                 continue
         except requests.exceptions.ConnectionError:
             connError += 1
-            print('Connection error for '+ str(connError) +' times!')
+            print(str(datetime.datetime.now()) +' Connection error for '+ str(connError) +' times!')
             if connError >= attemptTimes:
-                print('conn error!')
+                print(str(datetime.datetime.now()) +' conn ERROR!')
                 return None
     return resultJson
 
@@ -171,10 +172,10 @@ def doXfer(walletAddr, ammount):        #向胜利者发送XDAG       成功返�
         body = {"method":"xdag_do_xfer", "params":[{"amount":str('%.9f'%(ammount)), "address":walletAddr, "remark":"REMARK"}], "id":1}
         resultJson = getXdagRpcJson(url, body)
         if resultJson is not None:
-                print('xfer ' +str('%.9f'%(ammount))+' to '+ walletAddr +' succesfully!')
+                print(str(datetime.datetime.now()) + ' xfer ' +str('%.9f'%(ammount))+' to '+ walletAddr +' succesfully!')
                 return resultJson['result'][0]['block']
         else:
-                print('xfer error: Need to xfer ' +str('%.9f'%(ammount))+' to '+ walletAddr +'!')
+                print(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +str('%.9f'%(ammount))+' to '+ walletAddr +'!')
                 return None
 
 
@@ -244,7 +245,7 @@ while True:
         if oldInputTxTopIndex == 1:
                 continue
         else:
-                print('New input arrived!')
+                print(str(datetime.datetime.now()) + ' New input arrived!')
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
                 reward([], newMatchBet)                 #由于新的匹配交易，不可能有已经被支付过，所以reward第一个参数为空
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
