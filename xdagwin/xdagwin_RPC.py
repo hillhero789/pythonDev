@@ -213,6 +213,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         f.close()
 
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空
+startTime = datetime.datetime.now()
 while True:     #获取所有交易数据
         getAllTxs(allInputTxs, allOutputTxs, walletAddr) 
         getLatestTx(txsLatestDict,walletAddr)
@@ -220,8 +221,8 @@ while True:     #获取所有交易数据
                 continue
         if txsLatestDict['Input'] == allInputTxs[1] and (allOutputTxs == [] or txsLatestDict['Output'] == allOutputTxs[1]):      #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
                 break
-
-
+endTime = datetime.datetime.now()
+print(endTime - startTime)
 getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
 reward(allOutputTxs,matchBet)
 refreshPage(unmatchBet, matchBet)
