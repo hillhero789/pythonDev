@@ -170,11 +170,13 @@ def doXfer(walletAddr, ammount):        #向胜利者发送XDAG       成功返�
         url = 'http://127.0.0.1:8888'
         body = {"method":"xdag_do_xfer", "params":[{"amount":str('%.9f'%(ammount)), "address":walletAddr, "remark":"REMARK"}], "id":1}
         resultJson = getXdagRpcJson(url, body)
-        
         if resultJson is not None:
-            return resultJson['result'][0]['block']
+                print('xfer ' +str('%.9f'%(ammount))+' to '+ walletAddr +' succesfully!')
+                return resultJson['result'][0]['block']
         else:
-            return None
+                print('xfer error: Need to xfer ' +str('%.9f'%(ammount))+' to '+ walletAddr +'!')
+                return None
+
 
 def calTxVal(paraTxHash):#计算传输哈希值
         s = 0 
@@ -204,16 +206,15 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         f.close()
 
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空
-startTime = datetime.datetime.now()
 while True:     #获取所有交易数据
         getAllTxs(allInputTxs, allOutputTxs, walletAddr) 
         getLatestTx(txsLatestDict,walletAddr)
         if allInputTxs == []:   #空表示无交易，继续等待
+                time.sleep(60)
                 continue
         if txsLatestDict['Input'] == allInputTxs[1] and (allOutputTxs == [] or txsLatestDict['Output'] == allOutputTxs[1]):      #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
                 break
-endTime = datetime.datetime.now()
-print(endTime - startTime)
+
 getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
 reward(allOutputTxs,matchBet)
 refreshPage(unmatchBet, matchBet)
@@ -222,10 +223,9 @@ refreshPage(unmatchBet, matchBet)
 
 oldInputTxTopIndex = 1
 oldInputTxTopHash = allInputTxs[1]
-
 while True:
         refreshPage(unmatchBet, matchBet)
-        time.sleep(30)
+        time.sleep(60)
         while True:
                 del(newAllInputTxs[:])  #清空
                 del(newAllOutputTxs[:]) #清空
@@ -240,6 +240,7 @@ while True:
         if oldInputTxTopIndex == 1:
                 continue
         else:
+                print('New input arrived!')
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
                 reward([], newMatchBet)                 #由于新的匹配交易，不可能有已经被支付过，所以reward第一个参数为空
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
