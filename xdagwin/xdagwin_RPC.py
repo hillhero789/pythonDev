@@ -23,10 +23,8 @@ allOutputTxs = []       #[wallet，哈希，数量，时间，...]
 newAllInputTxs = []     #获取最新输入交易
 newAllOutputTxs = []    #获取最新输出交易
 txsLatestDict = {'Input': '', 'Output': ''}        
-walletAddr = 'dvNo7wYcVz4zl6qRUy+twdFZv7vIJiuW'
+walletAddr = 'ovjaYrrxw/IuK7UHAWv5d9ByWCdQPTrS'
 
-pageAddr = 'https://explorer.xdag.io/block/dvNo7wYcVz4zl6qRUy+twdFZv7vIJiuW'
-explorerAddr =  'https://explorer.xdag.io/block/'
 
 def getPageData(href,tryTimes = 2):#增加错误处理，连接错误时可尝试多次，最终失败则返回空字符串
         i = 0
@@ -147,13 +145,8 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
 def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否已转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
         if paraMatchBet == []:
                 return
-        #tmpWalletAddr = ''
         i = 0
-        #j = 0
         k = 0
-        
-        #for j in range(0, len(paraOutputTxs), 4): #把输出交易表中的交易哈希转化为钱包地址
-        #        paraOutputTxs[j] = getWalletAddr('output', paraOutputTxs[j+1])   #把钱包地址填入outputTxs
         tmpOutputTxs = paraOutputTxs.copy()
 
         for i in range(0, len(paraMatchBet), 4):
@@ -172,8 +165,6 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                                                 k = tmpOutputTxs.index(tmpWalletAddr, k+1)#如果钱包地址一致，金额不一致，则继续向后查找，找不到了，则转账        
                         except ValueError:
                                 doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee))
-
-        #del(paraMatchBet[:])       #清空matchBet列表
 
 def doXfer(walletAddr, ammount):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
         url = 'http://127.0.0.1:8888'
