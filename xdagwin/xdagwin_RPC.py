@@ -190,7 +190,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         for i in range(0,len(paraUnmatchBet),3):
                 unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +paraUnmatchBet[i] + r'</td><td>' +paraUnmatchBet[i+1] + r'</td><td>' + str(calTxVal(paraUnmatchBet[i+1])) + r'</td><td>' + paraUnmatchBet[i+2] + r'</td></tr>'
 
-        for i in range(len(paraMatchBet)-4, max(0,len(paraMatchBet)-44),-4):
+        for i in range(len(paraMatchBet)-4, max(0,len(paraMatchBet)-44)-1,-4):
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td><td>' + paraMatchBet[i+3] + r'</td></tr>'
 
         footer = r'</table><p class="hideColor">' + str(datetime.datetime.now()) + r'</p></body></html>'
