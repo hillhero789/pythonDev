@@ -50,6 +50,7 @@ If amount transfered is not equal to any of the amount listed below, than your t
 </p>
 <table class="gridtable">
   <tr>
+		<td>Wallet（钱包）</td>
     <td>Tx hash（传输哈希）</td>
     <td>Tx hash value（哈希值）</td>
     <td>Amount（数量）</td>
