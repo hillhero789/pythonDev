@@ -193,7 +193,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
                 unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +paraUnmatchBet[i] + r'</td><td>' +paraUnmatchBet[i+1] + r'</td><td>' + str(calTxVal(paraUnmatchBet[i+1])) + r'</td><td>' + paraUnmatchBet[i+2] + r'</td></tr>'
 
         for i in range(len(paraMatchBet)-4, max(0,len(paraMatchBet)-44)-1,-4):
-                matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td><td>' + paraMatchBet[i+3] + r'</td></tr>'
+                matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td><td class = "STYLE1">' + paraMatchBet[i+3] + '! Get '+ str('%.9f'%(float(paraMatchBet[i+2])*2*(1-fee))) +r'xdag</td></tr>'
 
         footer = r'</table><p class="hideColor">' + str(datetime.datetime.now()) + r'</p></body></html>'
         f = open(filepath,'w+')
