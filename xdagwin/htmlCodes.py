@@ -40,7 +40,7 @@ table.gridtable td {
 </head>
 
 <body>
-<p>Game wallet（游戏地址）： <a href="https://explorer.xdag.io/block/dvNo7wYcVz4zl6qRUy+twdFZv7vIJiuW"><span class="STYLE1">dvNo7wYcVz4zl6qRUy+twdFZv7vIJiuW</span></a></p>
+<p>Game wallet（游戏地址）： <a href="https://explorer.xdag.io/block/ovjaYrrxw/IuK7UHAWv5d9ByWCdQPTrS"><span class="STYLE1">ovjaYrrxw/IuK7UHAWv5d9ByWCdQPTrS</span></a></p>
 <p>游戏规则：（<span class="STYLE1">测试阶段无任何手续费</span>）</p>
 <p>1、挂单：转入不等于下表数量的XDAG</p>
 <p>2、吃单：转入等于下表数量的XDAG，如哈希值大于下表哈希值，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG</p>
