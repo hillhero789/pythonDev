@@ -19,8 +19,8 @@ header = """
 		}
 		 
 		table {
-		  border-bottom: 4px solid #ACBAA5;
-		  border-right: 4px solid #ACBAA5;
+		  border-bottom: 5px solid #ACBAA5;
+		  border-right: 5px solid #ACBAA5;
 		  /*border-radius: 5px;*/
 		  background-color: #ffffff;
 		  width:100%;
