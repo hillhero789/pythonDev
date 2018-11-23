@@ -76,7 +76,7 @@ tableFooter ="""
 """
 
 footer = """
-<p style="font-weight:bold">游戏规则：（<span style="color:red">测试阶段无任何手续费</span>）</p>
+<p style="font-weight:bold">游戏规则：（<span style="color:#D20000">测试阶段无任何手续费</span>）</p>
 <p>1、挂单：转入不等于挂单列表数量的XDAG
 <br>2、吃单：转入等于挂单列表数量的XDAG，如哈希值大于下表哈希值，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG
 <br>3、哈希值：将传输哈希中的 <b>数字</b> 进行 <b>累加</b> 即可得到</p>

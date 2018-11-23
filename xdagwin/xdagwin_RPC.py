@@ -198,7 +198,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
         for i in range(len(paraMatchBet)-4, max(0,len(paraMatchBet)-44)-1,-4):
                 if paraMatchBet[i+3] == 'winner':
-                        tdHtml = r'<td class = "STYLE1">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r' XDAG</td></tr>'
+                        tdHtml = r'<td class = "color:#D20000">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r' XDAG</td></tr>'
                 else:
                         tdHtml = r'<td>lose</td></tr>'
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td>'+ tdHtml
