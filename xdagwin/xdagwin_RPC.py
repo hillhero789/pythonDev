@@ -203,14 +203,16 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
                         tdHtml = r'<td>lose</td></tr>'
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td>'+ tdHtml
 
-        footer = r'</table><p class="hideColor">' + str(datetime.datetime.now()) + r'</p></body></html>'
+        pageFooter = r'<p style="color:#C4CEBF">' + str(datetime.datetime.now()) + r'</p></body></html>'
         f = open(filepath,'w+')
         f.write(htmlCodes.header)
         f.write(unmatchBetTableBody)
         f.write(htmlCodes.tableFooter)
         f.write(htmlCodes.tableHeader)
         f.write(matchBetTalbeBody)
-        f.write(footer)
+        f.write(htmlCodes.tableFooter)
+        f.write(htmlCodes.footer)
+        f.write(pageFooter)
         f.close()
 
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空
