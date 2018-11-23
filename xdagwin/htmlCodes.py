@@ -6,7 +6,7 @@ header = """
 <style>
 	    body {
 			font-size: 14px;
-			margin: 50px 30px;
+			margin: 20px 30px;
 			background:#C4CEBF;
 			color:#333333
 		}
@@ -14,7 +14,9 @@ header = """
 			color:#D20000;
 			text-decoration:none;
 		}
-		a:visited {color:#D20000}
+		a:visited {
+			color:#D20000
+		}
 		 
 		table {
 		  border-bottom: 4px solid #ACBAA5;
