@@ -52,7 +52,7 @@ header = """
   <tr>
 	<th>钱包 （Wallet）</th>
     <th>交易ID （Tx ID）</th>
-    <th>交易ID数字和 （Tx ID value）</th>
+    <th>交易ID数字和 （Tx ID digit sum）</th>
     <th>数量 （Amount）</th>
   </tr>
 """
@@ -64,11 +64,11 @@ tableHeader = """
 <p style="font-weight:bold">最近结果 （Recent results）：</p>
 <table>
   <tr>
-    <th>Wallet（钱包）</th>
-    <th>Tx hash（传输哈希）</th>
-    <th>Tx hash value（哈希值）</th>
-	<th>Amount（数量）</th>
-	<th>Result（结果）</th>
+  <th>钱包 （Wallet）</th>
+  <th>交易ID （Tx ID）</th>
+  <th>交易ID数字和 （Tx ID digit sum）</th>
+	<th>数量 （Amount）</th>
+	<th>结果 （Result）</th>
   </tr>
 """
 tableFooter ="""
@@ -79,8 +79,8 @@ footer = """
 <p style="font-weight:bold">游戏规则：（<span style="color:#D20000">测试阶段无任何手续费</span>）</p>
 <p>1、挂单：转入不等于挂单列表数量的XDAG
 <br>2、吃单：转入等于挂单列表数量的XDAG，如哈希值大于下表哈希值，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG
-<br>3、哈希值：将传输哈希中的 <b>数字</b> 进行 <b>累加</b> 即可得到</p>
-<p>Rules:<br>Transfer any amount to game wallet, if amount transfered is equal to the amount listed below and your Tx hash value is bigger you will get double reward,or the one who has a bigger Tx hash value win and get double reward.
-If amount transfered is not equal to any of the amount listed below, than your transaction will be listed below waiting for next transfer. </p>
+<br>3、交易ID数字和：将传输哈希中的 <b>数字</b> 进行 <b>累加</b> 即可得到</p>
+<p>Rules:<br>Transfer any amount to game wallet, if amount transfered is equal to the amount listed on "available list" table and your Tx ID digit sum is bigger you will get double reward, or the one who has a bigger Tx ID digit sum win and get double reward.
+If amount transfered is not equal to any of the amount listed on "available list" table, then your transaction will be listed on "available list" table waiting for next transfer. </p>
 <script src="./sortTable.js"></script>
 """
