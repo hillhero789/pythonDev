@@ -77,8 +77,8 @@ tableFooter ="""
 
 footer = """
 <p style="font-weight:bold">游戏规则：（<span style="color:#D20000">测试阶段无任何手续费</span>）</p>
-<p>1、挂单：转入不等于挂单列表数量的XDAG
-<br>2、吃单：转入等于挂单列表数量的XDAG，如哈希值大于下表哈希值，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG
+<p>1、挂单：转入不等于挂单列表数量的XDAG（如想撤单可以再向游戏钱包转入相同数量的XDAG，则所有XDAG会自动转回到你的钱包）
+<br>2、吃单：转入等于挂单列表数量的XDAG，如交易ID数字和大于表中的交易ID数字和，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG
 <br>3、交易ID数字和：将传输哈希中的 <b>数字</b> 进行 <b>累加</b> 即可得到</p>
 <p>Rules:<br>Transfer any amount to game wallet, if amount transfered is equal to the amount listed on "available list" table and your Tx ID digit sum is bigger you will get double reward, or the one who has a bigger Tx ID digit sum win and get double reward.
 If amount transfered is not equal to any of the amount listed on "available list" table, then your transaction will be listed on "available list" table waiting for next transfer. </p>
