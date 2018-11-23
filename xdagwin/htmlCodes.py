@@ -6,7 +6,7 @@ header = """
 <style>
 	    body {
 			font-size: 14px;
-			margin: 20px 30px;
+			margin: 30px 30px;
 			background:#C4CEBF;
 			color:#333333
 		}
