@@ -48,6 +48,7 @@ def getXdagRpcJson(url, body, attemptTimes = 10):
         return resultJson
 
 def getWalletAddr(direction, txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
+        print('In getWalletAddr')   #debug
         url = 'http://pool.xdag.us:7667'
         body = {"method":"xdag_get_block_info", "params":[txHash], "id":1}
         resultJson = getXdagRpcJson(url, body)
@@ -55,13 +56,14 @@ def getWalletAddr(direction, txHash):#根据传输哈希获取对应的钱包地
                 return resultJson['result'][0]['transactions'][2]['address']
         else:
                 return resultJson['result'][0]['transactions'][3]['address']
+        print('leave getWalletAddr')   #debug
 
 def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对应钱包地址的所有输入、输出交易
         print('In getAllTxs')   #debug
         url = 'http://pool.xdag.us:7667'
         body = {"method":"xdag_get_transactions", "params":[{"address":walletAddr, "page":0, "pagesize":pageSize}], "id":1}
         resultJson = getXdagRpcJson(url, body)
-
+        print('after getXdagRpcJson')   #debug
         if resultJson is not None:
                 for r in resultJson['result']['transactions']:
                         if r['state'] =='Accepted':
