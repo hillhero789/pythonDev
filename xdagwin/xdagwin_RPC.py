@@ -238,7 +238,6 @@ del(allOutputTxs)
 print(gc.collect())
 
 while True:
-        refreshPage(unmatchBet, matchBet)
         time.sleep(120)
         while True:
                 del(newAllInputTxs[:])  #清空
@@ -265,6 +264,7 @@ while True:
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
                 print(gc.collect())
+                refreshPage(unmatchBet, matchBet)       #只有发现有新的交易进入时才刷新页面，减少读写文件次数
                 #refreshPage(unmatchBet, matchBet)
         oldInputTxTopHash = newAllInputTxs[1]
         
