@@ -235,7 +235,7 @@ oldInputTxTopHash = allInputTxs[1]
 
 del(allInputTxs)
 del(allOutputTxs)
-gc.collect()
+print(gc.collect())
 
 while True:
         refreshPage(unmatchBet, matchBet)
@@ -263,7 +263,7 @@ while True:
                 del(newMatchBet[:])
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
-        gc.collect()
+        print(gc.collect())
                 #refreshPage(unmatchBet, matchBet)
         oldInputTxTopHash = newAllInputTxs[1]
         
