@@ -78,7 +78,7 @@ def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对�
                                         paraOutputTxs.append(r['amount'])
                                         paraOutputTxs.append(r['timestamp'])
         print('leave getAllTxs')  #debug
-        return int(r['result']['total'])
+        return int(resultJson['result']['total'])
 
 def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAllTxs区别在于先不填写钱包地址
         print('In getAllTxs')   #debug
@@ -100,7 +100,7 @@ def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAll
                                         paraOutputTxs.append(r['amount'])
                                         paraOutputTxs.append(r['timestamp'])
         print('leave getAllTxs')  #debug
-        
+
 def getNewInputTxsWallet(paraInputTxs):
         for i in range(0, len(paraInputTxs), 4):
                 paraInputTxs[i] = getWalletAddr('input', paraInputTxs[i+1])
