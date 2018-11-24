@@ -36,7 +36,7 @@ def getXdagRpcJson(url, body, attemptTimes = 10):
                                 if errorCounter >= attemptTimes:
                                         print(str(datetime.datetime.now()) +' get data ERROR!')
                                         return None
-                                time.sleep(3)
+                                time.sleep(10)
                                 continue
                 except requests.exceptions.ConnectionError:
                         connError += 1
@@ -262,7 +262,7 @@ del(allOutputTxs)
 print(gc.collect())
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
-        time.sleep(10)   #debug 初始120
+        time.sleep(180)   #debug 初始120
         #while True:
         del(newAllInputTxs[:])  #清空
         del(newAllOutputTxs[:]) #清空
@@ -273,7 +273,7 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 #        continue
                 #if txsLatestDict['Input'] == newAllInputTxs[1] and (newAllOutputTxs == [] or txsLatestDict['Output'] == newAllOutputTxs[1]):   #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
                 #        break
-
+        
         oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
         if oldInputTxTopIndex == 1:
                 continue
@@ -284,11 +284,8 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 print(str(datetime.datetime.now()) + ' New input arrived!')
                 print(str(datetime.datetime.now()) + ' ' + str(newAllInputTxs[ 0 : oldInputTxTopIndex - 1]))
                 
-                print(newAllInputTxs)
-                input('press enter to continue')
+                time.sleep(10)
                 getNewInputTxsWallet(newAllInputTxs, oldInputTxTopIndex - 1)
-                print(newAllInputTxs)
-                input('press enter to continue')
 
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
                 reward([], newMatchBet,unmatchBet)      #由于新的匹配交易，不可能已经被支付过，所以reward第一个参数为空
