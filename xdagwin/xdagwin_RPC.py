@@ -243,6 +243,7 @@ while True:
         while True:
                 del(newAllInputTxs[:])  #清空
                 del(newAllOutputTxs[:]) #清空
+                print(gc.collect())
                 getAllTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
                 getLatestTx(txsLatestDict, WALLETADDR)
                 if newAllInputTxs == []:   #空表示无交易，继续等待
@@ -263,7 +264,7 @@ while True:
                 del(newMatchBet[:])
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
-        print(gc.collect())
+                print(gc.collect())
                 #refreshPage(unmatchBet, matchBet)
         oldInputTxTopHash = newAllInputTxs[1]
         
