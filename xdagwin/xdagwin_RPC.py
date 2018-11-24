@@ -7,6 +7,7 @@ import time
 import json
 import htmlCodes
 import datetime
+import gc
 
 makerFee = 0.00
 takerFee = 0.05
@@ -204,7 +205,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td>'+ tdHtml
 
         pageFooter = r'<p style="color:#C4CEBF">' + str(datetime.datetime.now()) + r'</p></body></html>'
-        f = open(filepath,'w+')
+        f = open(filepath,'w+')         #需增加错误处理
         f.write(htmlCodes.header)
         f.write(unmatchBetTableBody)
         f.write(htmlCodes.tableFooter)
@@ -229,13 +230,16 @@ getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹�
 reward(allOutputTxs,matchBet,unmatchBet)
 refreshPage(unmatchBet, matchBet)
 
-
-
 oldInputTxTopIndex = 1
 oldInputTxTopHash = allInputTxs[1]
+
+del(allInputTxs)
+del(allOutputTxs)
+gc.collect()
+
 while True:
         refreshPage(unmatchBet, matchBet)
-        time.sleep(60)
+        time.sleep(120)
         while True:
                 del(newAllInputTxs[:])  #清空
                 del(newAllOutputTxs[:]) #清空
@@ -259,6 +263,7 @@ while True:
                 del(newMatchBet[:])
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
+        gc.collect()
                 #refreshPage(unmatchBet, matchBet)
         oldInputTxTopHash = newAllInputTxs[1]
         
