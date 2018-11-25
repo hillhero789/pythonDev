@@ -27,6 +27,7 @@ def getXdagRpcJson(url, body, attemptTimes = 10):
         while True:
                 try:
                         resp = requests.post(url, data = json.dumps(body))
+                        print(str(datetime.datetime.now())+' after requests post')
                         resultJson = resp.json()
                         if 'error' not in resultJson.keys():
                                 break
@@ -53,10 +54,16 @@ def getWalletAddr(direction, txHash):#根据传输哈希获取对应的钱包地
         body = {"method":"xdag_get_block_info", "params":[txHash], "id":1}
         resultJson = getXdagRpcJson(url, body)
         if direction == 'input':
-                return resultJson['result'][0]['transactions'][2]['address']
+                ret = resultJson['result'][0]['transactions'][2]['address']
+                del(resultJson)
+                gc.collect()
+                return ret
         else:
-                return resultJson['result'][0]['transactions'][3]['address']
-        print('leave getWalletAddr')   #debug
+                ret = resultJson['result'][0]['transactions'][3]['address']
+                del(resultJson)
+                gc.collect()
+                return ret
+        
 
 def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对应钱包地址的所有输入、输出交易
         print('In getAllTxs')   #debug
@@ -77,15 +84,19 @@ def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对�
                                         paraOutputTxs.append(r['address'])
                                         paraOutputTxs.append(r['amount'])
                                         paraOutputTxs.append(r['timestamp'])
+        
+        ret = int(resultJson['result']['total'])
+        del(resultJson)
+        gc.collect()
         print('leave getAllTxs')  #debug
-        return int(resultJson['result']['total'])
+        return ret
 
 def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAllTxs区别在于先不填写钱包地址
-        print('In getNewTxs')   #debug
+        print(str(datetime.datetime.now())+' In getNewTxs')   #debug
         url = 'http://pool.xdag.us:7667'
         body = {"method":"xdag_get_transactions", "params":[{"address":walletAddr, "page":0, "pagesize":pageSize}], "id":1}
         resultJson = getXdagRpcJson(url, body)
-        print('after getXdagRpcJson')   #debug
+        print(str(datetime.datetime.now())+' after getXdagRpcJson')   #debug
         if resultJson is not None:
                 for r in resultJson['result']['transactions']:
                         if r['state'] =='Accepted':
@@ -99,11 +110,14 @@ def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAll
                                         paraOutputTxs.append(r['address'])
                                         paraOutputTxs.append(r['amount'])
                                         paraOutputTxs.append(r['timestamp'])
-        print('leave getNewTxs')  #debug
+        del(resultJson)
+        gc.collect()
+        print(str(datetime.datetime.now())+' leave getNewTxs')  #debug
 
 def getNewInputTxsWallet(paraInputTxs, endIndex):
         for i in range(0, endIndex, 4):
                 paraInputTxs[i] = getWalletAddr('input', paraInputTxs[i+1])
+                time.sleep(5)
 
 def getLatestTx(paraTxsDict, walletAddr, pageSize=20):#获取最近一笔Input 和 Output 的哈希
         print('In getLatestTx')   #debug
@@ -123,6 +137,8 @@ def getLatestTx(paraTxsDict, walletAddr, pageSize=20):#获取最近一笔Input �
                                         hasGetOutput = True
                                 elif hasGetInput and hasGetOutput:
                                         break
+        del(resultJson)
+        gc.collect()
         print('leave getLatestTx')  #debug
 
 def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInputTxs为输入交易列表
@@ -194,12 +210,16 @@ def doXfer(walletAddr, ammount, unmatchBet):        #向胜利者发送XDAG     
         body = {"method":"xdag_do_xfer", "params":[{"amount":'%.9f'%(ammount), "address":walletAddr, "remark":"REMARK"}], "id":1}
         resultJson = getXdagRpcJson(url, body)
         if resultJson is not None:
+                ret = resultJson['result'][0]['block']
+                del(resultJson)
+                gc.collect()
                 print(str(datetime.datetime.now()) + ' xfer ' +'%.9f'%(ammount)+' to '+ walletAddr +' succesfully!')
-                return resultJson['result'][0]['block']
+                return ret
         else:
+                del(resultJson)
+                gc.collect()
                 print(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(ammount)+' to '+ walletAddr +'!')
                 return None
-        print('leave doXfer')  #debug
 
 
 def calTxVal(paraTxHash):#计算传输哈希值
@@ -235,12 +255,15 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         f.write(htmlCodes.footer)
         f.write(pageFooter)
         f.close()
+        del(unmatchBetTableBody)
+        del(matchBetTalbeBody)
+        gc.collect()
         print('leave refreshPage')  #debug
 
 #以下代码用于确认当前区块浏览器中记录的游戏已经清空
 totalTxs = 0
 while True:     #获取所有交易数据
-        print(getAllTxs(allInputTxs, allOutputTxs, WALLETADDR, 1000))
+        getAllTxs(allInputTxs, allOutputTxs, WALLETADDR, 1000)
         getLatestTx(txsLatestDict,WALLETADDR, 1000)
         if allInputTxs == []:   #空表示无交易，继续等待
                 time.sleep(60)
@@ -259,14 +282,14 @@ oldInputTxTopHash = allInputTxs[1]
 
 del(allInputTxs)
 del(allOutputTxs)
-print(gc.collect())
+gc.collect()
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
-        time.sleep(180)   #debug 初始120
         #while True:
         del(newAllInputTxs[:])  #清空
         del(newAllOutputTxs[:]) #清空
-        print(gc.collect())
+        gc.collect()
+        time.sleep(180)   #debug 初始120
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
                 #getLatestTx(txsLatestDict, WALLETADDR)
                 #if newAllInputTxs == []:   #空表示无交易，继续等待
@@ -284,7 +307,7 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 print(str(datetime.datetime.now()) + ' New input arrived!')
                 print(str(datetime.datetime.now()) + ' ' + str(newAllInputTxs[ 0 : oldInputTxTopIndex - 1]))
                 
-                time.sleep(10)
+                time.sleep(10)  #将连续两次调用rpc的时间稍微隔开
                 getNewInputTxsWallet(newAllInputTxs, oldInputTxTopIndex - 1)
 
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
@@ -294,7 +317,7 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 del(newMatchBet[:])
                 if len(matchBet)>40:
                         del(matchBet[0:len(matchBet)-40])
-                print(gc.collect())
+                gc.collect()
                 refreshPage(unmatchBet, matchBet)       #只有发现有新的交易进入时才刷新页面，减少读写文件次数
         oldInputTxTopHash = newAllInputTxs[1]
         

@@ -4,34 +4,40 @@ import requests
 import json
 import time
 import datetime
+import sys
+import gc
 
 allInputTxs = []                    #[wallet，哈希，数量，时间，...]
 allOutputTxs = []                   #[wallet，哈希，数量，时间，...]
     # The RPC server url
 txsLatestDict = {'Input': '', 'Output': ''}
 
-def getXdagRpcJson(url, body, attemptTimes = 5):
-    errorCounter = 0
-    connError = 0
-    while True:
-        try:
-            resp = requests.post(url, data = json.dumps(body))
-            resultJson = resp.json()
-            if 'error' not in resultJson.keys():
-                break
-            else:
-                errorCounter += 1
-                if errorCounter >= attemptTimes:
-                    print('data error!')
-                    return None
-                continue
-        except requests.exceptions.ConnectionError:
-            connError += 1
-            print('Connection error for '+ str(connError) +' times!')
-            if connError >= attemptTimes:
-                print('conn error!')
-                return None
-    return resultJson
+def getXdagRpcJson(url, body, attemptTimes = 10):
+        errorCounter = 0
+        connError = 0
+        while True:
+                try:
+                        resp = requests.post(url, data = json.dumps(body))
+                        print(str(datetime.datetime.now())+' after requests post')
+                        resultJson = resp.json()
+                        if 'error' not in resultJson.keys():
+                                break
+                        else:
+                                errorCounter += 1
+                                print(str(datetime.datetime.now()) +' get data error for '+ str(errorCounter) +' times!')
+                                if errorCounter >= attemptTimes:
+                                        print(str(datetime.datetime.now()) +' get data ERROR!')
+                                        return None
+                                time.sleep(10)
+                                continue
+                except requests.exceptions.ConnectionError:
+                        connError += 1
+                        print(str(datetime.datetime.now()) +' Connection error for '+ str(connError) +' times!')
+                        time.sleep(3)
+                        if connError >= attemptTimes:
+                                print(str(datetime.datetime.now()) +' conn ERROR!')
+                                return None
+        return resultJson
 
 def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr):
     url = 'http://pool.xdag.us:7667'
@@ -93,8 +99,14 @@ def doXfer(walletAddr, ammount):#向胜利者发送XDAG       成功返回交易
             return resultJson['result'][0]['block']
         else:
             return None
-    
-startTime = datetime.datetime.now()
-print(doXfer('7eZXBkNI4kVtVq8Y4eoO/I3OcIEulgWN', 0.0000001))
-endTime = datetime.datetime.now()
-print((endTime - startTime))
+
+
+url = 'http://pool.xdag.us:7667'
+body = {"method":"xdag_get_transactions", "params":[{"address":"ovjaYrrxw/IuK7UHAWv5d9ByWCdQPTrS", "page":0, "pagesize":20}], "id":1}
+resultJson = getXdagRpcJson(url, body)
+print(sys.getsizeof(resultJson))
+del(resultJson)
+print(gc.collect())
+
+
+
