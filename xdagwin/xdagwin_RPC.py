@@ -237,7 +237,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         for i in range(0,len(paraUnmatchBet),3):
                 unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +paraUnmatchBet[i] + r'</td><td>' +paraUnmatchBet[i+1] + r'</td><td>' + str(calTxVal(paraUnmatchBet[i+1])) + r'</td><td>' + paraUnmatchBet[i+2] + r'</td></tr>'
 
-        for i in range(len(paraMatchBet)-4, max(-1,len(paraMatchBet)-44),-4):
+        for i in range(len(paraMatchBet)-4, max(-1,len(paraMatchBet)-84),-4):   
                 if paraMatchBet[i+3] == 'winner':
                         tdHtml = r'<td style = "color:#D20000">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r' XDAG</td></tr>'
                 else:
@@ -315,8 +315,8 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)
                 del(newMatchBet[:])
-                if len(matchBet)>40:
-                        del(matchBet[0:len(matchBet)-40])
+                if len(matchBet)>80:            #显示最近10对交易 10 * 2 * 4 = 80
+                        del(matchBet[0:len(matchBet)-80])
                 gc.collect()
                 refreshPage(unmatchBet, matchBet)       #只有发现有新的交易进入时才刷新页面，减少读写文件次数
         oldInputTxTopHash = newAllInputTxs[1]
