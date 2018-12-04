@@ -322,7 +322,7 @@ del(allOutputTxs)
 gc.collect()
 '''
 oldInputTxTopIndex = 1
-oldInputTxTopHash = r'lo2mGjhtvd0G6G4HYcW3EVUgtTKOVtR+'  #需初始化为最新的一个Tx
+oldInputTxTopHash = r'9YekNxmUdCThuRdh0xugIfejUfgk0t5M'  #需初始化为最新的一个Tx
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         #while True:
