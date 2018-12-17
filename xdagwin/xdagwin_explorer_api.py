@@ -99,32 +99,6 @@ def getBlockInfo(txHash):#根据传输哈希获取对应的钱包地址，direct
         gc.collect()
         return ret    
 
-def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对应钱包地址的所有输入、输出交易
-        print('In getAllTxs')   #debug
-        tmpBlockInfo = {}
-        resultJson = getBlockJson(walletAddr)
-        print('after getBlockJson')   #debug
-        if resultJson is not None:
-                for r in resultJson['block_as_address']:
-                        tmpBlockInfo = getBlockInfo(r['address'])
-                        if r['direction'] == 'input':
-                                paraInputTxs.append(tmpBlockInfo['input'])
-                                paraInputTxs.append(tmpBlockInfo['fee'])
-                                paraInputTxs.append(r['amount'])
-                                paraInputTxs.append(r['time'])
-                        else:
-                                paraOutputTxs.append(tmpBlockInfo['output'])
-                                paraOutputTxs.append(tmpBlockInfo['fee'])
-                                paraOutputTxs.append(r['amount'])
-                                paraOutputTxs.append(r['time'])
-        
-        ret = len(resultJson['block_as_address'])
-        del(resultJson)
-        del(tmpBlockInfo)
-        gc.collect()
-        print('leave getAllTxs')  #debug
-        return ret
-
 def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAllTxs区别在于先不填写钱包地址
         print(str(datetime.datetime.now())+' In getNewTxs')   #debug
         resultJson = getBlockJson(walletAddr)
