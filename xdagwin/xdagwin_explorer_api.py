@@ -51,7 +51,7 @@ def getXdagRpcJson(url, body, attemptTimes = 20):
                                 return None
         return resultJson
 
-def getBlockJson(addr, attemptTimes = 20):
+def getBlockJson(addr, attemptTimes = 10):
         errorCounter = 0
         connError = 0
         while True:
@@ -178,7 +178,7 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                         paraMatchBet.append(tmpWallet)          
                         paraMatchBet.append(tmpHash)
                         paraMatchBet.append(paraUnmatchBet.pop(j-2))
-                        if calTxVal(tmpHash) < calTxVal(paraInputTxs[i]):
+                        if (calTxVal(tmpHash) + calTxVal(paraInputTxs[i])) % 2 == 0 : #奇数挂单赢，偶数表示挂单输
                                 paraMatchBet.append('loser')
                                 tmpStr = 'winner'
                         else:
@@ -277,8 +277,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
 
 oldInputTxTopIndex = 1
-#oldInputTxTopHash = r'9YekNxmUdCThuRdh0xugIfejUfgk0t5M'  #需初始化为最新的一个Tx       for release
-oldInputTxTopHash = r'19ozVdZEteWiB1cfR/KF1VQ2z7zX68O8'   #for test
+oldInputTxTopHash = r'd2CRArIK2KnVCsDBwAM35bxDsW/V6udL'   
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         #while True:
