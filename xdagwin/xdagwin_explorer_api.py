@@ -280,11 +280,10 @@ oldInputTxTopIndex = 1
 oldInputTxTopHash = r'd2CRArIK2KnVCsDBwAM35bxDsW/V6udL'   
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
-        #while True:
         del(newAllInputTxs[:])  #清空
         del(newAllOutputTxs[:]) #清空
         gc.collect()
-        time.sleep(5)   #debug 初始180
+        time.sleep(180)
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
         
         oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)

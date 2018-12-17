@@ -2,7 +2,7 @@ header = """
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
+<title>Welcome to XDAG holder!</title>
 <style>
 	    body {
 			font-size: 14px;
