@@ -251,7 +251,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
 
 oldInputTxTopIndex = 1
-oldInputTxTopHash = r'd2CRArIK2KnVCsDBwAM35bxDsW/V6udL'   
+oldInputTxTopHash = r'cd3fXbxGlxdlPLt8jBp+IJfD+F3u13zi'   
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         del(newAllInputTxs[:])  #清空
