@@ -9,7 +9,8 @@ import gc
 
 fee = 0.0
 filepath = r'/var/www/html/index.html'
-POOL_RPC_URL = r'http://207.148.112.122:7667'   #for test
+EXPLORER_URL = r'https://explorer.xdag.io/api/block/'  
+
 #POOL_RPC_URL = r'http://pool.xdag.us:7667'    #for release
 #以上参数需要提前设置
 
@@ -21,9 +22,7 @@ allOutputTxs = []       #[wallet，见证块哈希，数量，时间，...]
 newAllInputTxs = []     #获取最新输入交易                               新数据在前，旧数据在后
 newAllOutputTxs = []    #获取最新输出交易
 txsLatestDict = {'Input': '', 'Output': ''}
-WALLETADDR = 'pRRhtN/MqUlS141CbX7L2sWNoR7e3LTA' #for test    
-#WALLETADDR = 'ovjaYrrxw/IuK7UHAWv5d9ByWCdQPTrS' #for release       
-
+WALLETADDR = 'zEHEOBggVqqAhQ4XQWTIIGFI4tmysxJF'       
 
 def getXdagRpcJson(url, body, attemptTimes = 20):
         errorCounter = 0
@@ -51,73 +50,75 @@ def getXdagRpcJson(url, body, attemptTimes = 20):
                                 print(str(datetime.datetime.now()) +' conn ERROR!')
                                 return None
         return resultJson
-'''
-def getWalletAddr(direction, txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
-        print('In getWalletAddr')   #debug
-        url = POOL_RPC_URL
-        body = {"method":"xdag_get_block_info", "params":[txHash], "id":1}
-        resultJson = getXdagRpcJson(url, body)
-        if direction == 'input':
-                ret = resultJson['result'][0]['transactions'][2]['address']
-                del(resultJson)
-                gc.collect()
-                return ret
-        elif direction == 'output':
-                ret = resultJson['result'][0]['transactions'][3]['address']
-                del(resultJson)
-                gc.collect()
-                return ret
-        elif direction == 'fee':
-                ret = resultJson['result'][0]['transactions'][0]['address']
-                del(resultJson)
-                gc.collect()
-                return ret
-'''
+
+def getBlockJson(addr, attemptTimes = 20):
+        errorCounter = 0
+        connError = 0
+        while True:
+                try:
+                        resp = requests.get(EXPLORER_URL + addr)
+                        print(str(datetime.datetime.now())+' after requests post')
+                        resultJson = resp.json()
+                        if 'error' not in resultJson.keys():
+                                break
+                        else:
+                                errorCounter += 1
+                                print(str(datetime.datetime.now()) +' get data error for '+ str(errorCounter) +' times!')
+                                if errorCounter >= attemptTimes:
+                                        print(str(datetime.datetime.now()) +' get data ERROR!')
+                                        return None
+                                time.sleep(10)
+                                continue
+                except:
+                        connError += 1
+                        print(str(datetime.datetime.now()) +' Connection error for '+ str(connError) +' times!')
+                        time.sleep(3)
+                        if connError >= attemptTimes:
+                                print(str(datetime.datetime.now()) +' conn ERROR!')
+                                return None
+        return resultJson
+
 def log(logContent):
         f = open('./log.txt','a+')         #需增加错误处理
         f.write(logContent + '\n')
         f.close()
 
-
 def getBlockInfo(txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
         print('In getWalletAddr')   #debug
         ret = {'input':'','output':'','fee':''}
-        url = POOL_RPC_URL
-        body = {"method":"xdag_get_block_info", "params":[txHash], "id":1}
-        resultJson = getXdagRpcJson(url, body)
+        resultJson = getBlockJson(txHash)
 
-        ret['fee'] = resultJson['result'][0]['transactions'][0]['address']      #testnet里没有OUTPUT 给自己 但主网有，是否是0.3版新特性 ？？？？???
-        ret['input'] = resultJson['result'][0]['transactions'][2]['address']
-        ret['output'] = resultJson['result'][0]['transactions'][3]['address']
+        for blockItem in resultJson['block_as_transaction']:
+                if blockItem['direction'] == 'fee':
+                        ret['fee'] = blockItem['address']      
+                elif blockItem['direction'] == 'input':
+                        ret['input'] = blockItem['address']
+                elif blockItem['direction'] == 'output':
+                        ret['output'] = blockItem['address']
         del(resultJson)
         gc.collect()
-
-        return ret
-        
+        return ret    
 
 def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对应钱包地址的所有输入、输出交易
         print('In getAllTxs')   #debug
         tmpBlockInfo = {}
-        url = POOL_RPC_URL
-        body = {"method":"xdag_get_transactions", "params":[{"address":walletAddr, "page":0, "pagesize":pageSize}], "id":1}
-        resultJson = getXdagRpcJson(url, body)
-        print('after getXdagRpcJson')   #debug
+        resultJson = getBlockJson(walletAddr)
+        print('after getBlockJson')   #debug
         if resultJson is not None:
-                for r in resultJson['result']['transactions']:
-                        if r['state'] =='Accepted':
-                                tmpBlockInfo = getBlockInfo(r['address'])
-                                if r['direction'] == 'input':
-                                        paraInputTxs.append(tmpBlockInfo['input'])
-                                        paraInputTxs.append(tmpBlockInfo['fee'])
-                                        paraInputTxs.append(r['amount'])
-                                        paraInputTxs.append(r['timestamp'])
-                                else:
-                                        paraOutputTxs.append(tmpBlockInfo['output'])
-                                        paraOutputTxs.append(tmpBlockInfo['fee'])
-                                        paraOutputTxs.append(r['amount'])
-                                        paraOutputTxs.append(r['timestamp'])
+                for r in resultJson['block_as_address']:
+                        tmpBlockInfo = getBlockInfo(r['address'])
+                        if r['direction'] == 'input':
+                                paraInputTxs.append(tmpBlockInfo['input'])
+                                paraInputTxs.append(tmpBlockInfo['fee'])
+                                paraInputTxs.append(r['amount'])
+                                paraInputTxs.append(r['time'])
+                        else:
+                                paraOutputTxs.append(tmpBlockInfo['output'])
+                                paraOutputTxs.append(tmpBlockInfo['fee'])
+                                paraOutputTxs.append(r['amount'])
+                                paraOutputTxs.append(r['time'])
         
-        ret = int(resultJson['result']['total'])
+        ret = len(resultJson['block_as_address'])
         del(resultJson)
         del(tmpBlockInfo)
         gc.collect()
@@ -126,23 +127,20 @@ def getAllTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):#获取对�
 
 def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAllTxs区别在于先不填写钱包地址
         print(str(datetime.datetime.now())+' In getNewTxs')   #debug
-        url = POOL_RPC_URL
-        body = {"method":"xdag_get_transactions", "params":[{"address":walletAddr, "page":0, "pagesize":pageSize}], "id":1}
-        resultJson = getXdagRpcJson(url, body)
-        print(str(datetime.datetime.now())+' after getXdagRpcJson')   #debug
+        resultJson = getBlockJson(walletAddr)
+        print(str(datetime.datetime.now())+' after getBlockJson')   #debug
         if resultJson is not None:
-                for r in resultJson['result']['transactions']:
-                        if r['state'] =='Accepted':
-                                if r['direction'] == 'input':
-                                        paraInputTxs.append('')                 #为减少调用requests.post，提高性能，在putWalletAndWitness中填入参数
-                                        paraInputTxs.append(r['address'])       #此时地址仍未被替换为 见证块哈希，在putWalletAndWitness中填入
-                                        paraInputTxs.append(r['amount'])
-                                        paraInputTxs.append(r['timestamp'])
-                                else:
-                                        paraOutputTxs.append('')                #为减少调用requests.post，提高性能，在putWalletAndWitness中填入参数
-                                        paraOutputTxs.append(r['address'])      #此时地址仍未被替换为 见证块哈希，在putWalletAndWitness中填入
-                                        paraOutputTxs.append(r['amount'])
-                                        paraOutputTxs.append(r['timestamp'])
+                for r in resultJson['block_as_address']:
+                        if r['direction'] == 'input':
+                                paraInputTxs.append('')                 #为减少调用requests.post，提高性能，在putWalletAndWitness中填入参数
+                                paraInputTxs.append(r['address'])       #此时地址仍未被替换为 见证块哈希，在putWalletAndWitness中填入
+                                paraInputTxs.append(r['amount'])
+                                paraInputTxs.append(r['time'])
+                        else:
+                                paraOutputTxs.append('')                #为减少调用requests.post，提高性能，在putWalletAndWitness中填入参数
+                                paraOutputTxs.append(r['address'])      #此时地址仍未被替换为 见证块哈希，在putWalletAndWitness中填入
+                                paraOutputTxs.append(r['amount'])
+                                paraOutputTxs.append(r['time'])
         del(resultJson)
         gc.collect()
         print(str(datetime.datetime.now())+' leave getNewTxs')  #debug
@@ -156,29 +154,6 @@ def putWalletAndWitness(paraInputTxs, endIndex):        #获取钱包地址和�
                 paraInputTxs[i+1] = tmpBlockInfo['fee']         #witness hash
                 time.sleep(5)
         return  ret
-
-
-def getLatestTx(paraTxsDict, walletAddr, pageSize=20):#获取最近一笔Input 和 Output 的哈希
-        print('In getLatestTx')   #debug
-        hasGetInput = False
-        hasGetOutput = False
-        url = POOL_RPC_URL
-        body = {"method":"xdag_get_transactions", "params":[{"address":walletAddr, "page":0, "pagesize":pageSize}], "id":1}
-        resultJson = getXdagRpcJson(url, body)
-        if resultJson is not None:
-                for r in resultJson['result']['transactions']:
-                        if r['state'] =='Accepted':
-                                if not hasGetInput and r['direction'] == 'input':
-                                        paraTxsDict['Input'] = r['address']
-                                        hasGetInput = True
-                                elif not hasGetOutput and r['direction'] == 'output':
-                                        paraTxsDict['Output'] = r['address']
-                                        hasGetOutput = True
-                                elif hasGetInput and hasGetOutput:
-                                        break
-        del(resultJson)
-        gc.collect()
-        print('leave getLatestTx')  #debug
 
 def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInputTxs为输入交易列表
         print('In getMatchAndUnmatchBet') #debug
@@ -300,34 +275,10 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         gc.collect()
         print('leave refreshPage')  #debug
 
-'''
-#以下代码用于确认当前区块浏览器中记录的游戏已经清空
-totalTxs = 0
-while True:     #获取所有交易数据
-        getAllTxs(allInputTxs, allOutputTxs, WALLETADDR, 1000)
-        getLatestTx(txsLatestDict,WALLETADDR, 1000)
-        if allInputTxs == []:   #空表示无交易，继续等待
-                time.sleep(60)
-                continue
-        if txsLatestDict['Input'] == allInputTxs[1] and (allOutputTxs == [] or txsLatestDict['Output'] == allOutputTxs[1]):      #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
-                break
 
-#需增加是否达到1000笔交易的上限，如达到，暂停
-
-getMatchAndUnmatchBet(allInputTxs,matchBet,unmatchBet)      #将匹配与未匹配交易进行记录
-reward(allOutputTxs,matchBet,unmatchBet)
-refreshPage(unmatchBet, matchBet)
-
-oldInputTxTopIndex = 1
-oldInputTxTopHash = allInputTxs[1]
-
-del(allInputTxs)
-del(allOutputTxs)
-gc.collect()
-'''
 oldInputTxTopIndex = 1
 #oldInputTxTopHash = r'9YekNxmUdCThuRdh0xugIfejUfgk0t5M'  #需初始化为最新的一个Tx       for release
-oldInputTxTopHash = r'UhCYb+1ll3rmqkeLCJIpe6np3hBxW+Mj'   #for test
+oldInputTxTopHash = r'19ozVdZEteWiB1cfR/KF1VQ2z7zX68O8'   #for test
 
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         #while True:
@@ -336,11 +287,6 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         gc.collect()
         time.sleep(5)   #debug 初始180
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
-                #getLatestTx(txsLatestDict, WALLETADDR)
-                #if newAllInputTxs == []:   #空表示无交易，继续等待
-                #        continue
-                #if txsLatestDict['Input'] == newAllInputTxs[1] and (newAllOutputTxs == [] or txsLatestDict['Output'] == newAllOutputTxs[1]):   #证明获取所有交易期间没有增加新的交易，如果不符合，则需重新获取所有交易
-                #        break
         
         oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
         if oldInputTxTopIndex == 1:
@@ -365,5 +311,4 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                         del(matchBet[0:len(matchBet)-80])
                 gc.collect()
                 refreshPage(unmatchBet, matchBet)       #只有发现有新的交易进入时才刷新页面，减少读写文件次数
-        #oldInputTxTopHash = newAllInputTxs[1]
         
