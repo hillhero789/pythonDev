@@ -252,6 +252,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         print('leave refreshPage')  #debug
 
 
+#------------------------------------------程序开始------------------------------------------
 oldInputTxTopIndex = 1
 oldOutputTxTopIndex = 1
 oldInputTxTopHash = r'cd3fXbxGlxdlPLt8jBp+IJfD+F3u13zi'   
