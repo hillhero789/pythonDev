@@ -267,7 +267,7 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         oldOutputTxTopIndex = newAllOutputTxs.index(oldOutputTxTopHash)
         if oldInputTxTopIndex == 1:
                 continue
-        elif oldInputTxTopIndex >= 77: #表示单次新增数据超出允许的最大值（ pageSize = 20，77 = (20-1)*4+1 ）
+        elif oldInputTxTopIndex >= 157: #表示单次新增数据超出允许的最大值（ pageSize = 20，77 = (20-1)*4+1 ）
                 print('transaction too much! Need to restart!')
                 log('transaction too much! Need to restart!')
                 input() #暂停程序
