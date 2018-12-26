@@ -2,10 +2,10 @@ header = """
 <!doctype html>
 <html lang="zh-CN">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <link href="https://xdag.io/assets/images/fav/favicon.png" rel="icon">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta charset=utf-8">
 <title>Welcome to XDAG holder!</title>
 <meta http-equiv="refresh" content="60"> 
 </head>
