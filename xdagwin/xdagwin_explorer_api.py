@@ -134,7 +134,7 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
         tmpHash = ''
         tmpWallet = ''
         tmpStr = 'loser'
-        i = len(paraInputTxs) - 3        # i-1是钱包地址，i 是传输哈希，i+1 是数量   计算出已经完成的bet，和未完成的bet
+        i = len(paraInputTxs) - 3        # i-1是钱包地址，i 是传输哈希（ID），i+1 是数量   计算出已经完成的bet，和未完成的bet
         while i >0:
                 try:
                         j = paraUnmatchBet.index(paraInputTxs[i+1]) #找到数量一致的位置
@@ -152,7 +152,7 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                         paraMatchBet.append(tmpWallet)          
                         paraMatchBet.append(tmpHash)
                         paraMatchBet.append(paraUnmatchBet.pop(j-2))
-                        if (calTxVal(tmpHash) + calTxVal(paraInputTxs[i])) % 2 == 0 : #奇数挂单赢，偶数表示挂单输
+                        if (calTxVal(tmpHash) < calTxVal(paraInputTxs[i])) : #数值大者胜，相等挂单者胜。
                                 paraMatchBet.append('loser')
                                 tmpStr = 'winner'
                         else:
