@@ -50,10 +50,10 @@ header = """
 <p style="font-weight:bold">挂单列表 （Available list）：</p>
 <table id="table1">
   <tr>
-	<th>钱包 （Wallet）</th>
-    <th>交易ID （Tx ID）</th>
+	<th>数量 （Amount）</th>
     <th>交易ID数字和 （Tx ID digit sum）</th>
-    <th>数量 （Amount）</th>
+    <th>交易ID （Tx ID）</th>
+    <th>钱包 （Wallet）</th>
   </tr>
 """
 

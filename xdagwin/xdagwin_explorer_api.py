@@ -3,7 +3,7 @@
 import requests
 import time
 import json
-import htmlCodes
+import htmlCodes_bootstrap
 import datetime
 import gc
 
@@ -119,13 +119,13 @@ def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAll
         gc.collect()
         print(str(datetime.datetime.now())+' leave getNewTxs')  #debug
 
-def putWalletAndWitness(paraInputTxs, endIndex):        #获取钱包地址和见证块哈希，并填入到paraInputTxs
+def putWalletAndWitness(paraTxs, endIndex, direction='input'):        #获取钱包地址和见证块哈希，并填入到paraTxs
         tmpBlockInfo = {}
-        ret = paraInputTxs[1]
+        ret = paraTxs[1]
         for i in range(0, endIndex, 4):
-                tmpBlockInfo = getBlockInfo(paraInputTxs[i+1])
-                paraInputTxs[i] = tmpBlockInfo['input']         #wallet
-                paraInputTxs[i+1] = tmpBlockInfo['fee']         #witness hash
+                tmpBlockInfo = getBlockInfo(paraTxs[i+1])
+                paraTxs[i] = tmpBlockInfo[direction]         #wallet
+                paraTxs[i+1] = tmpBlockInfo['fee']         #witness hash
                 time.sleep(5)
         return  ret
 
@@ -181,10 +181,10 @@ def reward(paraOutputTxs, paraMatchBet, paraUnMatchBet):#获取所有output交�
                                 k = tmpOutputTxs.index(tmpWalletAddr)
                                 while True:
                                         if float(tmpOutputTxs[k+2]) == float(paraMatchBet[i+2])*2.0*(1-fee):#找到钱包地址一致，且数量一致，则证明已完成
-                                                tmpOutputTxs.pop(k-1)             #防止一个钱包相同金额赢了多次，不给转账
-                                                tmpOutputTxs.pop(k-1)
-                                                tmpOutputTxs.pop(k-1)
-                                                tmpOutputTxs.pop(k-1)
+                                                tmpOutputTxs.pop(k)             #防止一个钱包相同金额赢了多次，不给转账
+                                                tmpOutputTxs.pop(k)
+                                                tmpOutputTxs.pop(k)
+                                                tmpOutputTxs.pop(k)
                                                 break
                                         else:
                                                 k = tmpOutputTxs.index(tmpWalletAddr, k+1)#如果钱包地址一致，金额不一致，则继续向后查找，找不到了，则转账        
@@ -224,7 +224,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         matchBetTalbeBody = ''
         
         for i in range(0,len(paraUnmatchBet),3):
-                unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +paraUnmatchBet[i] + r'</td><td>' +paraUnmatchBet[i+1] + r'</td><td>' + str(calTxVal(paraUnmatchBet[i+1])) + r'</td><td>' + paraUnmatchBet[i+2] + r'</td></tr>'
+                unmatchBetTableBody = unmatchBetTableBody + r'<tr><td>' +paraUnmatchBet[i+2] + r'</td><td>' + str(calTxVal(paraUnmatchBet[i+1])) + r'</td><td>' + paraUnmatchBet[i+1] + r'</td><td>' + paraUnmatchBet[i] + r'</td></tr>'
 
         for i in range(len(paraMatchBet)-4, max(-1,len(paraMatchBet)-84),-4):   
                 if paraMatchBet[i+3] == 'winner':
@@ -233,15 +233,17 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
                         tdHtml = r'<td>lose</td></tr>'
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td>'+ tdHtml
 
-        pageFooter = r'<p style="color:#C4CEBF">' + str(datetime.datetime.now()) + r'</p></body></html>'
+        pageFooter = r'<p style="color:#FFFFFF">' + str(datetime.datetime.now()) + r'</p></div></body></html>'
         f = open(filepath,'w+')         #需增加错误处理
-        f.write(htmlCodes.header)
+        f.write(htmlCodes_bootstrap.header)
         f.write(unmatchBetTableBody)
-        f.write(htmlCodes.tableFooter)
-        f.write(htmlCodes.tableHeader)
+        f.write(htmlCodes_bootstrap.tableFooter)
+
+        f.write(htmlCodes_bootstrap.tableHeader)
         f.write(matchBetTalbeBody)
-        f.write(htmlCodes.tableFooter)
-        f.write(htmlCodes.footer)
+        f.write(htmlCodes_bootstrap.tableFooter)
+
+        f.write(htmlCodes_bootstrap.footer)
         f.write(pageFooter)
         f.close()
         del(unmatchBetTableBody)
@@ -251,16 +253,18 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
 
 oldInputTxTopIndex = 1
+oldOutputTxTopIndex = 1
 oldInputTxTopHash = r'cd3fXbxGlxdlPLt8jBp+IJfD+F3u13zi'   
-
+oldOutputTxTopHash = r'lgSYONbTJORFW/f8dJTKMMA0RXnVaC5m'        #主要用于在reward()检查matchBet列表是否已经reward过了。
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         del(newAllInputTxs[:])  #清空
         del(newAllOutputTxs[:]) #清空
         gc.collect()
-        time.sleep(180)
+        time.sleep(5)   # 180
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
         
         oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
+        oldOutputTxTopIndex = newAllOutputTxs.index(oldOutputTxTopHash)
         if oldInputTxTopIndex == 1:
                 continue
         elif oldInputTxTopIndex >= 77: #表示单次新增数据超出允许的最大值（ pageSize = 20，77 = (20-1)*4+1 ）
@@ -273,9 +277,15 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 
                 time.sleep(10)  #将连续两次调用rpc的时间稍微隔开
                 oldInputTxTopHash = putWalletAndWitness(newAllInputTxs, oldInputTxTopIndex - 1) #修改 newAllInputTxs，同时返回其第一个元素的 交易哈希，以便下次搜索用
-
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
-                reward([], newMatchBet,unmatchBet)      #由于新的匹配交易，不可能已经被支付过，所以reward第一个参数为空
+                
+                if(oldOutputTxTopIndex != 1):
+                        oldOutputTxTopHash = putWalletAndWitness(newAllOutputTxs, oldOutputTxTopIndex - 1,'output')
+
+
+                #### 增加是否截取最新 outputtxs ，否则旧 output 会有影响
+                reward(newAllOutputTxs[0:oldOutputTxTopIndex - 1], newMatchBet,unmatchBet)      #由于新的匹配交易，不可能已经被支付过，所以reward第一个参数为空
+
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)
                 del(newMatchBet[:])

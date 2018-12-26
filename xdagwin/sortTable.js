@@ -8,17 +8,17 @@ tableSort.prototype = {
  
 initialize : function(tableId,clickRow,startRow,endRow,classUp,classDown,selectClass){ 
 this.Table = document.getElementById(tableId); 
-this.rows = this.Table.rows;//所有行 
-this.Tags = this.rows[clickRow-1].cells;//标签td 
+this.rows = this.Table.rows;
+this.Tags = this.rows[clickRow-1].cells;
 this.up = classUp; 
 this.down = classDown; 
 this.startRow = startRow; 
 this.selectClass = selectClass; 
 this.endRow = (endRow == 999? this.rows.length : endRow); 
-this.T2Arr = this._td2Array();//所有受影响的td的二维数组 
+this.T2Arr = this._td2Array(); 
 this.setShow(); 
 }, 
-//设置标签切换 
+
 setShow:function(){ 
 var defaultClass = this.Tags[0].className; 
 for(var Tag ,i=0;Tag = this.Tags[i];i++){ 
@@ -42,9 +42,9 @@ turn=0;
 } 
 } 
 }, 
-//设置选中列样式 
+
 colClassSet:function(num,cla){ 
-//得到关联到的td 
+
 for(var i= (this.startRow-1);i<(this.endRow);i++){ 
 for(var n=0;n<this.rows[i].cells.length;n++){ 
 removeClass(this.rows[i].cells[n],cla); 
@@ -52,12 +52,12 @@ removeClass(this.rows[i].cells[n],cla);
 addClass(this.rows[i].cells[num],cla); 
 } 
 }, 
-//开始排序 num 根据第几列排序 aord 逆序还是顺序 
+
 startArray:function(aord,num){ 
-var afterSort = this.sortMethod(this.T2Arr,aord,num);//排序后的二维数组传到排序方法中去 
-this.array2Td(num,afterSort);//输出 
+var afterSort = this.sortMethod(this.T2Arr,aord,num);
+this.array2Td(num,afterSort);
 }, 
-//将受影响的行和列转换成二维数组 
+
 _td2Array:function(){ 
 var arr=[]; 
 for(var i=(this.startRow-1),l=0;i<(this.endRow);i++,l++){ 
@@ -68,7 +68,7 @@ arr[l].push(this.rows[i].cells[n].innerHTML);
 } 
 return arr; 
 }, 
-//根据排序后的二维数组来输出相应的行和列的 innerHTML 
+
 array2Td:function(num,arr){ 
 this.colClassSet(num,this.selectClass); 
 for(var i= (this.startRow-1),l=0;i<(this.endRow);i++,l++){ 
@@ -77,9 +77,9 @@ this.rows[i].cells[n].innerHTML = arr[l][n];
 } 
 } 
 }, 
-//传进来一个二维数组，根据二维数组的子项中的w项排序，再返回排序后的二维数组 
+
 sortMethod:function(arr,aord,w){ 
-//var effectCol = this.getColByNum(whichCol); 
+
 arr.sort(function(a,b){ 
 x = killHTML(a[w]); 
 y = killHTML(b[w]); 
@@ -129,11 +129,9 @@ return function() {
 return fun.apply(object, arguments); 
 } 
 } 
-//去掉所有的html标记 
+
 function killHTML(str){ 
 return str.replace(/<[^>]+>/g,""); 
 } 
-//------------------------------------------------ 
-//tableid 第几行是标签行，从第几行开始排序，第几行结束排序(999表示最后) 升序标签样式，降序标签样式 选中列样式 
-//注意标签行的class应该是一致的 
+
 var ex1 = new tableSort('table1',1,2,999,'up','down','hov'); 
