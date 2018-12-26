@@ -87,11 +87,11 @@ tableHeader = """
 <table class="table table-hover table-responsive text-nowrap table-sm">
 <thead class="text-center">
   <tr>
-  <th>钱包</th>
-  <th>ID</th>
+  <th>结果</th>
+  <th>数量</th>
   <th>ID数字和</th>
-	<th>数量</th>
-	<th>结果</th>
+	<th>ID</th>
+	<th>钱包</th>
   </tr></thead>
    <tbody>
 """

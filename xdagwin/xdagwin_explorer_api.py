@@ -228,10 +228,10 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
         for i in range(len(paraMatchBet)-4, max(-1,len(paraMatchBet)-84),-4):   
                 if paraMatchBet[i+3] == 'winner':
-                        tdHtml = r'<td style = "color:#D20000">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r' XDAG</td></tr>'
+                        tdHtml = r'<td style = "color:#D20000">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r' XDAG</td>'
                 else:
-                        tdHtml = r'<td>lose</td></tr>'
-                matchBetTalbeBody = matchBetTalbeBody + r'<tr><td>' + paraMatchBet[i] + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+2] + r'</td>'+ tdHtml
+                        tdHtml = r'<td>lose</td>'
+                matchBetTalbeBody = matchBetTalbeBody + r'<tr>' + tdHtml + r'<td>' + paraMatchBet[i+2] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + paraMatchBet[i] + r'</td></tr>'
 
         pageFooter = r'<p style="color:#FFFFFF">' + str(datetime.datetime.now()) + r'</p></div></body></html>'
         f = open(filepath,'w+')         #需增加错误处理
