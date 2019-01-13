@@ -1,6 +1,6 @@
-header = """
+header_en = """
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <link href="https://xdag.io/assets/images/fav/favicon.png" rel="icon">
@@ -38,7 +38,7 @@ header = """
 <div class="container text-center">
 <br>
 <div class="card border-light mb-3">
-<div class="card-header"><strong>游戏地址：</strong></div>
+<div class="card-header"><strong>Game wallet：</strong></div>
 <div class="card-body">
     <p class="card-text"><a href="https://explorer.xdag.io/block/xhGLWKKZ1CHhxZBhPwITumnbiagr92MT">xhGLWKKZ1CHhxZBhPwITumnbiagr92MT</a></p>
   </div>
@@ -46,58 +46,58 @@ header = """
 
 <div class="container">
 <div class="card border-light mb-3">
-<div class="card-header"><strong>游戏规则：</strong>（<span style="color:#D20000">测试阶段无任何手续费</span>）</div>
+<div class="card-header"><strong>Rules：</strong>（<span style="color:#D20000">No fee</span>）</div>
 <div class="card-body">
-<h6>1、挂单：转入<strong>不等于</strong>挂单列表数量的XDAG（如想撤单可以再向游戏钱包转入相同数量的XDAG，则所有XDAG会自动转回到你的钱包）
-<br>2、吃单：转入<strong>等于</strong>挂单列表数量的XDAG，如转账后生成的ID数字和大于表中的挂单的ID数字和，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG（相等时挂单者胜）
-<br>3、ID数字和：将传输区块中 “FEE” 地址中的所有 <b>数字</b> 进行 <b>累加</b> 即可得到
+<h6>1、maker：Transfer any amount of XDAG to game wallet that <strong>not equal</strong> to any of the amount on the list.
+<br>2、Taker：Transfer an amount of XDAG that <strong>equal</strong> to the amount on the list, if the ID digit sum is bigger than that of the maker，you can earn double amount of XDAG, or the maker get double amount of XDAG.
+<br>3、ID digit sum：The sum of all the digit of "FEE" address in the transaction blcok which you generated when transfer XDAG to game wallet.
 <br>
-<br><a href="ruleExample.html">游戏规则示例</a></h6>
+<br><a href="ruleExample.html">An example of game rules</a></h6>
   </div>
 </div></div>
 
 <div class="container">
 <div class="card border-light mb-3">
-<div class="card-header"><strong>挂单列表：</strong></div>
+<div class="card-header"><strong>maker list：</strong></div>
 <div class="card-body">
 <table id="table1" class="table table-hover table-responsive text-nowrap text-center table-sm">
 <thead>
   <tr>
-	<th>数量</th>
-    <th>ID数字和</th>
+	<th>Amount</th>
+    <th>ID digit sum</th>
     <th>ID</th>
-    <th>钱包</th>
+    <th>Wallet</th>
   </tr>
  </thead>
  <tbody>
 """
 
-tableFooter ="""
+tableFooter_en ="""
 </tbody>
 </table>
 </div>
 </div></div>
 """
 
-tableHeader = """
+tableHeader_en = """
 <div class="container">
 <div class="card border-light mb-3">
-<div class="card-header"><strong>最近结果：</strong></div>
+<div class="card-header"><strong>Recent result：</strong></div>
 <div class="card-body">
 <table class="table table-hover table-responsive text-nowrap table-sm">
 <thead class="text-center">
   <tr>
-  <th>结果</th>
-  <th>数量</th>
-  <th>ID数字和</th>
+  <th>Result</th>
+  <th>Amount</th>
+  <th>ID digit sum</th>
 	<th>ID</th>
-	<th>钱包</th>
+	<th>Wallet</th>
   </tr></thead>
    <tbody>
 """
 
 
-footer = """
+footer_en = """
 <div class="container text-center"><br>Copyright 2018 xdagholder</div>
 <script src="./sortTable.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

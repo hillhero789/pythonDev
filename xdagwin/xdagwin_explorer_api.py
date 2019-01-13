@@ -4,25 +4,23 @@ import requests
 import time
 import json
 import htmlCodes_bootstrap
+import htmlCodes_bootstrap_en
 import datetime
 import gc
 
 fee = 0.0
 filepath = r'/var/www/html/index.html'
+filepath_en = r'/var/www/html/index_en.html'
 EXPLORER_URL = r'https://explorer.xdag.io/api/block/'  
-
-#POOL_RPC_URL = r'http://pool.xdag.us:7667'    #for release
 #以上参数需要提前设置
 
 unmatchBet = []         #[wallet, 见证块哈希，数量，...]
 matchBet = []           #[wallet, 见证块哈希，数量，winner or loser，...]
 newMatchBet = []        
-allInputTxs = []        #[wallet，见证块哈希，数量，时间，...]
-allOutputTxs = []       #[wallet，见证块哈希，数量，时间，...]
-newAllInputTxs = []     #获取最新输入交易                               新数据在前，旧数据在后
-newAllOutputTxs = []    #获取最新输出交易
-txsLatestDict = {'Input': '', 'Output': ''}
-WALLETADDR = 'zEHEOBggVqqAhQ4XQWTIIGFI4tmysxJF'       
+newAllInputTxs = []     #获取最新输入交易 [wallet, 见证块哈希，数量，时间]                               新数据在前，旧数据在后
+newAllOutputTxs = []    #获取最新输出交易 [wallet, 见证块哈希，数量，时间]  
+
+WALLETADDR = 'xhGLWKKZ1CHhxZBhPwITumnbiagr92MT'       
 
 def getXdagRpcJson(url, body, attemptTimes = 20):
         errorCounter = 0
@@ -99,7 +97,7 @@ def getBlockInfo(txHash):#根据传输哈希获取对应的钱包地址，direct
         gc.collect()
         return ret    
 
-def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr, pageSize=20 ):# 与getAllTxs区别在于先不填写钱包地址
+def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr):# 与getAllTxs区别在于先不填写钱包地址
         print(str(datetime.datetime.now())+' In getNewTxs')   #debug
         resultJson = getBlockJson(walletAddr)
         print(str(datetime.datetime.now())+' after getBlockJson')   #debug
@@ -246,6 +244,20 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         f.write(htmlCodes_bootstrap.footer)
         f.write(pageFooter)
         f.close()
+        #-----------------------------------------------------------------------
+        f = open(filepath_en,'w+')         #需增加错误处理
+        f.write(htmlCodes_bootstrap_en.header_en)
+        f.write(unmatchBetTableBody)
+        f.write(htmlCodes_bootstrap_en.tableFooter_en)
+
+        f.write(htmlCodes_bootstrap_en.tableHeader_en)
+        f.write(matchBetTalbeBody)
+        f.write(htmlCodes_bootstrap_en.tableFooter_en)
+
+        f.write(htmlCodes_bootstrap_en.footer_en)
+        f.write(pageFooter)
+        f.close()
+        
         del(unmatchBetTableBody)
         del(matchBetTalbeBody)
         gc.collect()
@@ -255,31 +267,46 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 #------------------------------------------程序开始------------------------------------------
 oldInputTxTopIndex = 1
 oldOutputTxTopIndex = 1
-oldInputTxTopHash = r'cd3fXbxGlxdlPLt8jBp+IJfD+F3u13zi'   
-oldOutputTxTopHash = r'lgSYONbTJORFW/f8dJTKMMA0RXnVaC5m'        #主要用于在reward()检查matchBet列表是否已经reward过了。
+oldInputTxTopHash = r''   
+oldOutputTxTopHash = r''        #主要用于在reward()检查matchBet列表是否已经reward过了。
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         del(newAllInputTxs[:])  #清空
         del(newAllOutputTxs[:]) #清空
         gc.collect()
-        time.sleep(120)   # 180
+        time.sleep(1)   # 180
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
         
-        oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
-        oldOutputTxTopIndex = newAllOutputTxs.index(oldOutputTxTopHash)
+        if newAllInputTxs == []:
+                continue
+        else:
+                if oldInputTxTopHash != '':
+                        try:
+                                oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
+                        except ValueError:
+                                continue
+                else:
+                        oldInputTxTopIndex = len(newAllInputTxs)+1
+
         if oldInputTxTopIndex == 1:
                 continue
-        elif oldInputTxTopIndex >= 157: #表示单次新增数据超出允许的最大值（ pageSize = 20，77 = (20-1)*4+1 ）
-                print('transaction too much! Need to restart!')
-                log('transaction too much! Need to restart!')
-                input() #暂停程序
+        #elif oldInputTxTopIndex >= 157: #表示单次新增数据超出允许的最大值（ pageSize = 20，77 = (20-1)*4+1 ）
+        #        print('transaction too much! Need to restart!')
+        #        log('transaction too much! Need to restart!')
+        #        input() #暂停程序
         else:
                 print(str(datetime.datetime.now()) + ' New input arrived!')
                 print(str(datetime.datetime.now()) + ' ' + str(newAllInputTxs[ 0 : oldInputTxTopIndex - 1]))
                 
-                time.sleep(10)  #将连续两次调用rpc的时间稍微隔开
+                time.sleep(5)  #将连续两次调用rpc的时间稍微隔开
                 oldInputTxTopHash = putWalletAndWitness(newAllInputTxs, oldInputTxTopIndex - 1) #修改 newAllInputTxs，同时返回其第一个元素的 交易哈希，以便下次搜索用
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
                 
+                if newAllOutputTxs !=[]:
+                        if oldOutputTxTopHash != '':
+                                oldOutputTxTopIndex = newAllOutputTxs.index(oldOutputTxTopHash)
+                        else:
+                                oldOutputTxTopIndex = len(newAllOutputTxs)+1
+
                 if(oldOutputTxTopIndex != 1):
                         oldOutputTxTopHash = putWalletAndWitness(newAllOutputTxs, oldOutputTxTopIndex - 1,'output')
 
@@ -294,4 +321,3 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                         del(matchBet[0:len(matchBet)-80])
                 gc.collect()
                 refreshPage(unmatchBet, matchBet)       #只有发现有新的交易进入时才刷新页面，减少读写文件次数
-        
