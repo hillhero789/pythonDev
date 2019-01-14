@@ -48,7 +48,7 @@ header_en = """
 <div class="card border-light mb-3">
 <div class="card-header"><strong>Rules：</strong>（<span style="color:#D20000">No fee</span>）</div>
 <div class="card-body">
-<h6>1、maker：Transfer any amount of XDAG to game wallet that <strong>not equal</strong> to any of the amount on the list.
+<h6>1、Maker：Transfer any amount of XDAG to game wallet that <strong>not equal</strong> to any of the amount on the list.
 <br>2、Taker：Transfer an amount of XDAG that <strong>equal</strong> to the amount on the list, if the ID digit sum is bigger than that of the maker，you can earn double amount of XDAG, or the maker get double amount of XDAG.
 <br>3、ID digit sum：The sum of all the digit of "FEE" address in the transaction blcok which you generated when transfer XDAG to game wallet.
 <br>
@@ -58,7 +58,7 @@ header_en = """
 
 <div class="container">
 <div class="card border-light mb-3">
-<div class="card-header"><strong>maker list：</strong></div>
+<div class="card-header"><strong>Maker list：</strong></div>
 <div class="card-body">
 <table id="table1" class="table table-hover table-responsive text-nowrap text-center table-sm">
 <thead>
