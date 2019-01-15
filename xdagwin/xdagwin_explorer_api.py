@@ -20,7 +20,7 @@ newMatchBet = []
 newAllInputTxs = []     #获取最新输入交易 [wallet, 见证块哈希，数量，时间]                               新数据在前，旧数据在后
 newAllOutputTxs = []    #获取最新输出交易 [wallet, 见证块哈希，数量，时间]  
 
-WALLETADDR = '5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub'       
+WALLETADDR = 'rNjmn9TPaAWpePMcQZkA0sSDxYUgUaD+'       
 
 def getXdagRpcJson(url, body, attemptTimes = 20):
         errorCounter = 0
@@ -173,7 +173,7 @@ def rewardPerHour(paraUnMatchBet):
                 xferAmountBase = float(paraUnMatchBet[i+2])
                 if  xferAmountBase > 1000.0:
                         xferAmountBase = 1000.0
-                doXfer(paraUnMatchBet[i], xferAmountBase*0.001)
+                doXfer(paraUnMatchBet[i], xferAmountBase*0.001, 'http://127.0.0.1:8888')
 
 def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否已转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
         #print('In reward') #debug
@@ -201,9 +201,9 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                                 doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee))
         #print('leave reward')  #debug
 
-def doXfer(walletAddr, amount):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
+def doXfer(walletAddr, amount, url = 'http://127.0.0.1:8878'):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('In doXfer') #debug
-        url = 'http://127.0.0.1:8888'
+        #url = 'http://127.0.0.1:8888'
         body = {"method":"xdag_do_xfer", "params":[{"amount":'%.9f'%(amount), "address":walletAddr, "remark":"REMARK"}], "id":1}
         resultJson = getXdagRpcJson(url, body, 1)
         if resultJson is not None:

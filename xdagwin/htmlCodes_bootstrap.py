@@ -40,7 +40,7 @@ header = """
 <div class="card border-light mb-3">
 <div class="card-header"><strong>游戏地址：</strong></div>
 <div class="card-body">
-    <p class="card-text"><a href="https://explorer.xdag.io/block/5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub">5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub</a></p>
+    <p class="card-text"><a href="https://explorer.xdag.io/block/rNjmn9TPaAWpePMcQZkA0sSDxYUgUaD+">rNjmn9TPaAWpePMcQZkA0sSDxYUgUaD+</a></p>
   </div>
 </div></div>
 
