@@ -168,6 +168,8 @@ def rewardPerHour(paraUnMatchBet):
         if paraUnMatchBet == []:
                 return
         for i in range(0, len(paraUnMatchBet), 3):
+                if i > 27:
+                        break
                 xferAmountBase = float(paraUnMatchBet[i+2])
                 if  xferAmountBase > 1000.0:
                         xferAmountBase = 1000.0
