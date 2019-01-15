@@ -277,7 +277,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 counter = 0
 oldInputTxTopIndex = 1
 oldOutputTxTopIndex = 1
-oldInputTxTopHash = r''   
+oldInputTxTopHash = r'iVNGsgJcYw//01PTTlzl/RFgk0aXF8u3'   
 oldOutputTxTopHash = r''        #主要用于在reward()检查matchBet列表是否已经reward过了。
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         del(newAllInputTxs[:])  #清空
