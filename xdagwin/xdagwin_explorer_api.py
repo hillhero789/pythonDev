@@ -14,13 +14,13 @@ filepath_en = r'/var/www/html/index_en.html'
 EXPLORER_URL = r'https://explorer.xdag.io/api/block/'  
 #以上参数需要提前设置
 
-unmatchBet = []         #[wallet, 见证块哈希，数量，...]
+unmatchBet = []         #[wallet, 见证块哈希，数量，...]  //每小时向前10名赠送 (数量<1000?数量:1000) * .001。
 matchBet = []           #[wallet, 见证块哈希，数量，winner or loser，...]
 newMatchBet = []        
 newAllInputTxs = []     #获取最新输入交易 [wallet, 见证块哈希，数量，时间]                               新数据在前，旧数据在后
 newAllOutputTxs = []    #获取最新输出交易 [wallet, 见证块哈希，数量，时间]  
 
-WALLETADDR = 'xhGLWKKZ1CHhxZBhPwITumnbiagr92MT'       
+WALLETADDR = '5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub'       
 
 def getXdagRpcJson(url, body, attemptTimes = 20):
         errorCounter = 0
@@ -124,7 +124,7 @@ def putWalletAndWitness(paraTxs, endIndex, direction='input'):        #获取钱
                 tmpBlockInfo = getBlockInfo(paraTxs[i+1])
                 paraTxs[i] = tmpBlockInfo[direction]         #wallet
                 paraTxs[i+1] = tmpBlockInfo['fee']         #witness hash
-                time.sleep(5)
+                time.sleep(1)
         return  ret
 
 def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInputTxs为输入交易列表
@@ -132,7 +132,7 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
         tmpHash = ''
         tmpWallet = ''
         tmpStr = 'loser'
-        i = len(paraInputTxs) - 3        # i-1是钱包地址，i 是传输哈希（ID），i+1 是数量   计算出已经完成的bet，和未完成的bet
+        i = len(paraInputTxs) - 3        # i-1是钱包地址，i 是见证块哈希（ID），i+1 是数量   计算出已经完成的bet，和未完成的bet
         while i >0:
                 try:
                         j = paraUnmatchBet.index(paraInputTxs[i+1]) #找到数量一致的位置
@@ -162,9 +162,18 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                         paraMatchBet.append(paraInputTxs[i+1])
                         paraMatchBet.append(tmpStr)
                 i -= 4
-        print('leave getMatchAndUnmatchBet')  #debug
 
-def reward(paraOutputTxs, paraMatchBet, paraUnMatchBet):#获取所有output交易，判断是否已转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
+def rewardPerHour(paraUnMatchBet):
+        xferAmountBase = 0.0
+        if paraUnMatchBet == []:
+                return
+        for i in range(0, len(paraUnMatchBet), 3):
+                xferAmountBase = float(paraUnMatchBet[i+2])
+                if  xferAmountBase > 1000.0:
+                        xferAmountBase = 1000.0
+                doXfer(paraUnMatchBet[i], xferAmountBase*0.001)
+
+def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否已转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
         #print('In reward') #debug
         if paraMatchBet == []:
                 return
@@ -187,25 +196,25 @@ def reward(paraOutputTxs, paraMatchBet, paraUnMatchBet):#获取所有output交�
                                         else:
                                                 k = tmpOutputTxs.index(tmpWalletAddr, k+1)#如果钱包地址一致，金额不一致，则继续向后查找，找不到了，则转账        
                         except ValueError:
-                                doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee), paraUnMatchBet)
+                                doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee))
         #print('leave reward')  #debug
 
-def doXfer(walletAddr, ammount, unmatchBet):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
+def doXfer(walletAddr, amount):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('In doXfer') #debug
         url = 'http://127.0.0.1:8888'
-        body = {"method":"xdag_do_xfer", "params":[{"amount":'%.9f'%(ammount), "address":walletAddr, "remark":"REMARK"}], "id":1}
+        body = {"method":"xdag_do_xfer", "params":[{"amount":'%.9f'%(amount), "address":walletAddr, "remark":"REMARK"}], "id":1}
         resultJson = getXdagRpcJson(url, body, 1)
         if resultJson is not None:
                 ret = resultJson['result'][0]['block']
                 del(resultJson)
                 gc.collect()
-                print(str(datetime.datetime.now()) + ' xfer ' +'%.9f'%(ammount)+' to '+ walletAddr +' succesfully!')
+                print(str(datetime.datetime.now()) + ' xfer ' +'%.9f'%(amount)+' to '+ walletAddr +' succesfully!')
                 return ret
         else:
                 del(resultJson)
                 gc.collect()
-                print(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(ammount)+' to '+ walletAddr +'!')
-                log(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(ammount)+' to '+ walletAddr +'!')
+                print(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(amount)+' to '+ walletAddr +'!')
+                log(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(amount)+' to '+ walletAddr +'!')
                 return None
 
 
@@ -265,6 +274,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
 
 #------------------------------------------程序开始------------------------------------------
+counter = 0
 oldInputTxTopIndex = 1
 oldOutputTxTopIndex = 1
 oldInputTxTopHash = r''   
@@ -273,7 +283,13 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         del(newAllInputTxs[:])  #清空
         del(newAllOutputTxs[:]) #清空
         gc.collect()
-        time.sleep(60)   # 180
+        time.sleep(60)   # 60
+
+        counter = counter + 1
+        if counter == 60:
+                rewardPerHour(unmatchBet)
+                counter = 0
+
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
         
         if newAllInputTxs == []:
@@ -293,7 +309,7 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 print(str(datetime.datetime.now()) + ' New input arrived!')
                 print(str(datetime.datetime.now()) + ' ' + str(newAllInputTxs[ 0 : oldInputTxTopIndex - 1]))
                 
-                time.sleep(5)  #将连续两次调用rpc的时间稍微隔开
+                time.sleep(1)  #将连续两次调用rpc的时间稍微隔开
                 oldInputTxTopHash = putWalletAndWitness(newAllInputTxs, oldInputTxTopIndex - 1) #修改 newAllInputTxs，同时返回其第一个元素的 交易哈希，以便下次搜索用
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
                 
@@ -307,7 +323,7 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                         oldOutputTxTopHash = putWalletAndWitness(newAllOutputTxs, oldOutputTxTopIndex - 1,'output')
 
                 #### 增加是否截取最新 outputtxs ，否则旧 output 会有影响
-                reward(newAllOutputTxs[0:oldOutputTxTopIndex - 1], newMatchBet,unmatchBet)      #由于新的匹配交易，不可能已经被支付过，所以reward第一个参数为空
+                reward(newAllOutputTxs[0:oldOutputTxTopIndex - 1], newMatchBet)      #由于新的匹配交易，不可能已经被支付过，所以reward第一个参数为空
 
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)

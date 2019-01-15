@@ -40,7 +40,7 @@ header_en = """
 <div class="card border-light mb-3">
 <div class="card-header"><strong>Game wallet：</strong></div>
 <div class="card-body">
-    <p class="card-text"><a href="https://explorer.xdag.io/block/xhGLWKKZ1CHhxZBhPwITumnbiagr92MT">xhGLWKKZ1CHhxZBhPwITumnbiagr92MT</a></p>
+    <p class="card-text"><a href="https://explorer.xdag.io/block/5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub">5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub</a></p>
   </div>
 </div></div>
 
@@ -48,7 +48,7 @@ header_en = """
 <div class="card border-light mb-3">
 <div class="card-header"><strong>Rules：</strong>（<span style="color:#D20000">No fee</span>）</div>
 <div class="card-body">
-<h6>1、Maker：Transfer any amount of XDAG to game wallet that <strong>not equal</strong> to any of the amount on the list.
+<h6>1、Maker：Transfer any amount of XDAG to game wallet that <strong>not equal</strong> to any of the amount on the list. <span style="color:#D20000">Every hour, system will send XDAG to makers, the amount is millesimal amount of the top 10 Maker</span>(no more than 1XDAG).
 <br>2、Taker：Transfer an amount of XDAG that <strong>equal</strong> to the amount on the list, if the ID digit sum is bigger than that of the maker，you can earn double amount of XDAG, or the maker get double amount of XDAG.
 <br>3、ID digit sum：The sum of all the digit of "FEE" address in the transaction blcok which you generated when transfer XDAG to game wallet.
 <br>
@@ -98,7 +98,7 @@ tableHeader_en = """
 
 
 footer_en = """
-<div class="container text-center"><br>Copyright 2018 xdagholder</div>
+<div class="container text-center">Friends links: <a href="xdagpark.com">XDAG Park</a><br><br>Copyright 2018 xdagholder</div>
 <script src="./sortTable.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

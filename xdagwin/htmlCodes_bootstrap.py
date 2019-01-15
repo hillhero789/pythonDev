@@ -40,7 +40,7 @@ header = """
 <div class="card border-light mb-3">
 <div class="card-header"><strong>游戏地址：</strong></div>
 <div class="card-body">
-    <p class="card-text"><a href="https://explorer.xdag.io/block/xhGLWKKZ1CHhxZBhPwITumnbiagr92MT">xhGLWKKZ1CHhxZBhPwITumnbiagr92MT</a></p>
+    <p class="card-text"><a href="https://explorer.xdag.io/block/5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub">5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub</a></p>
   </div>
 </div></div>
 
@@ -48,7 +48,7 @@ header = """
 <div class="card border-light mb-3">
 <div class="card-header"><strong>游戏规则：</strong>（<span style="color:#D20000">测试阶段无任何手续费</span>）</div>
 <div class="card-body">
-<h6>1、挂单：转入<strong>不等于</strong>挂单列表数量的XDAG（如想撤单可以再向游戏钱包转入相同数量的XDAG，则所有XDAG会自动转回到你的钱包）
+<h6>1、挂单：转入<strong>不等于</strong>挂单列表数量的XDAG，<span style="color:#D20000">系统约每1小时向前10个挂单者发放千分之一的XDAG</span>（大于1000的挂单按1000计算）。
 <br>2、吃单：转入<strong>等于</strong>挂单列表数量的XDAG，如转账后生成的ID数字和大于表中的挂单的ID数字和，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG（相等时挂单者胜）
 <br>3、ID数字和：将传输区块中 “FEE” 地址中的所有 <b>数字</b> 进行 <b>累加</b> 即可得到
 <br>
@@ -98,7 +98,7 @@ tableHeader = """
 
 
 footer = """
-<div class="container text-center"><br>Copyright 2018 xdagholder</div>
+<div class="container text-center">友情链接：<a href="xdagpark.com">XDAG公园</a><br><br>Copyright 2018 xdagholder</div>
 <script src="./sortTable.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
