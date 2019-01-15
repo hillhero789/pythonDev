@@ -28,7 +28,6 @@ def getXdagRpcJson(url, body, attemptTimes = 20):
         while True:
                 try:
                         resp = requests.post(url, data = json.dumps(body))
-                        #print(str(datetime.datetime.now())+' after requests post')
                         resultJson = resp.json()
                         if 'error' not in resultJson.keys():
                                 break
@@ -55,7 +54,6 @@ def getBlockJson(addr, attemptTimes = 10):
         while True:
                 try:
                         resp = requests.get(EXPLORER_URL + addr)
-                        #print(str(datetime.datetime.now())+' after requests post')
                         resultJson = resp.json()
                         if 'error' not in resultJson.keys():
                                 break
@@ -82,7 +80,6 @@ def log(logContent):
         f.close()
 
 def getBlockInfo(txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
-        #print('In getWalletAddr')   #debug
         ret = {'input':'','output':'','fee':''}
         resultJson = getBlockJson(txHash)
 
@@ -98,9 +95,7 @@ def getBlockInfo(txHash):#根据传输哈希获取对应的钱包地址，direct
         return ret    
 
 def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr):# 与getAllTxs区别在于先不填写钱包地址
-        #print(str(datetime.datetime.now())+' In getNewTxs')   #debug
         resultJson = getBlockJson(walletAddr)
-        #print(str(datetime.datetime.now())+' after getBlockJson')   #debug
         if resultJson is not None:
                 for r in resultJson['block_as_address']:
                         if r['direction'] == 'input':
@@ -115,7 +110,6 @@ def getNewTxs(paraInputTxs, paraOutputTxs, walletAddr):# 与getAllTxs区别在�
                                 paraOutputTxs.append(r['time'])
         del(resultJson)
         gc.collect()
-        #print(str(datetime.datetime.now())+' leave getNewTxs')  #debug
 
 def putWalletAndWitness(paraTxs, endIndex, direction='input'):        #获取钱包地址和见证块哈希，并填入到paraTxs
         tmpBlockInfo = {}
@@ -128,7 +122,6 @@ def putWalletAndWitness(paraTxs, endIndex, direction='input'):        #获取钱
         return  ret
 
 def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInputTxs为输入交易列表
-        #print('In getMatchAndUnmatchBet') #debug
         tmpHash = ''
         tmpWallet = ''
         tmpStr = 'loser'
@@ -176,7 +169,6 @@ def rewardPerHour(paraUnMatchBet):
                 doXfer(paraUnMatchBet[i], xferAmountBase*0.001, 'http://127.0.0.1:8888')
 
 def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否已转入到matchBet对应的地址，如果是，则已完成，否则未完成，进行转账
-        #print('In reward') #debug
         if paraMatchBet == []:
                 return
         i = 0
@@ -199,7 +191,6 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                                                 k = tmpOutputTxs.index(tmpWalletAddr, k+1)#如果钱包地址一致，金额不一致，则继续向后查找，找不到了，则转账        
                         except ValueError:
                                 doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee))
-        #print('leave reward')  #debug
 
 def doXfer(walletAddr, amount, url = 'http://127.0.0.1:8878'):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('In doXfer') #debug
@@ -228,7 +219,6 @@ def calTxVal(paraTxHash):#计算传输哈希值
         return s
 
 def refreshPage(paraUnmatchBet, paraMatchBet):
-        #print('In refreshPage')  #debug
         unmatchBetTableBody = ''
         matchBetTalbeBody = ''
         
@@ -272,14 +262,13 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
         del(unmatchBetTableBody)
         del(matchBetTalbeBody)
         gc.collect()
-        #print('leave refreshPage')  #debug
 
 
 #------------------------------------------程序开始------------------------------------------
 counter = 0
 oldInputTxTopIndex = 1
 oldOutputTxTopIndex = 1
-oldInputTxTopHash = r'iVNGsgJcYw//01PTTlzl/RFgk0aXF8u3'   
+oldInputTxTopHash = r''   
 oldOutputTxTopHash = r''        #主要用于在reward()检查matchBet列表是否已经reward过了。
 while True:#需增加是否达到1000笔交易的上限，如达到，暂停
         del(newAllInputTxs[:])  #清空
