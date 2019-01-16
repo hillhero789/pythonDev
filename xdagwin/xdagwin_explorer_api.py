@@ -82,7 +82,8 @@ def log(logContent):
 def getBlockInfo(txHash):#根据传输哈希获取对应的钱包地址，direction 表示交易传输方向
         ret = {'input':'','output':'','fee':''}
         resultJson = getBlockJson(txHash)
-
+        if resultJson is None:
+                input("Error:get data error, resultJson is none")
         for blockItem in resultJson['block_as_transaction']:
                 if blockItem['direction'] == 'fee':
                         ret['fee'] = blockItem['address']      
@@ -137,13 +138,13 @@ def getMatchAndUnmatchBet(paraInputTxs, paraMatchBet, paraUnmatchBet):#paraInput
                         paraUnmatchBet.append(paraInputTxs[i])
                         paraUnmatchBet.append(paraInputTxs[i+1])
                 else:
-                        tmpWallet = paraUnmatchBet.pop(j-2)     #将原来在不匹配列表中的数据加入到匹配列表
+                        tmpWallet = paraUnmatchBet.pop(j-2)     #将原来在不匹配列表(挂单)中的数据加入到匹配列表
                         tmpHash = paraUnmatchBet.pop(j-2)     
 
                         paraMatchBet.append(tmpWallet)          
                         paraMatchBet.append(tmpHash)
                         paraMatchBet.append(paraUnmatchBet.pop(j-2))
-                        if (calTxVal(tmpHash) < calTxVal(paraInputTxs[i])) : #数值大者胜，相等挂单者胜。
+                        if (calTxVal(tmpHash) + calTxVal(paraInputTxs[i])) % 2 == 0 : #偶数挂单者输，奇数吃单者输
                                 paraMatchBet.append('loser')
                                 tmpStr = 'winner'
                         else:
@@ -267,6 +268,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
 
 #------------------------------------------程序开始------------------------------------------
+doItOnce = True
 counter = 0
 oldInputTxTopIndex = 1
 oldOutputTxTopIndex = 1
@@ -285,20 +287,16 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
 
         getNewTxs(newAllInputTxs, newAllOutputTxs, WALLETADDR)
         
-        if newAllInputTxs == []:
-                continue
-        else:
-                if oldInputTxTopHash != '':
+        if newAllInputTxs != []:
+                if oldInputTxTopHash != '':     #允许从非新地址开始启动游戏
                         try:
                                 oldInputTxTopIndex = newAllInputTxs.index(oldInputTxTopHash)
                         except ValueError:
-                                continue
+                                input("Error: can not find oldInputTxTopHash in newAllInputTxs")
                 else:
                         oldInputTxTopIndex = len(newAllInputTxs)+1
 
-        if oldInputTxTopIndex == 1:
-                continue
-        else:
+        if oldInputTxTopIndex != 1:
                 print(str(datetime.datetime.now()) + ' New input arrived!')
                 print(str(datetime.datetime.now()) + ' ' + str(newAllInputTxs[ 0 : oldInputTxTopIndex - 1]))
                 
@@ -306,18 +304,23 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
                 oldInputTxTopHash = putWalletAndWitness(newAllInputTxs, oldInputTxTopIndex - 1) #修改 newAllInputTxs，同时返回其第一个元素的 交易哈希，以便下次搜索用
                 getMatchAndUnmatchBet(newAllInputTxs[ 0 : oldInputTxTopIndex - 1], newMatchBet, unmatchBet)      #将新增交易记录到匹配与未匹配交易列表，得到新的匹配列表
                 
-                if newAllOutputTxs !=[]:
-                        if oldOutputTxTopHash != '':
-                                oldOutputTxTopIndex = newAllOutputTxs.index(oldOutputTxTopHash)
-                        else:
-                                oldOutputTxTopIndex = len(newAllOutputTxs)+1
+                if doItOnce is True:    #仅重新启动时需要执行此部分代码
+                        if newAllOutputTxs != []:
+                                if oldOutputTxTopHash != '':    #允许从非新地址开始启动游戏
+                                        try:
+                                                oldOutputTxTopIndex = newAllOutputTxs.index(oldOutputTxTopHash)
+                                        except ValueError:
+                                                input("Error: can not find oldOutputTxTopHash in newAllOutputTxs")
+                                else:
+                                        oldOutputTxTopIndex = len(newAllOutputTxs)+1
 
-                if(oldOutputTxTopIndex != 1):
-                        oldOutputTxTopHash = putWalletAndWitness(newAllOutputTxs, oldOutputTxTopIndex - 1,'output')
+                                if oldOutputTxTopIndex != 1:
+                                        oldOutputTxTopHash = putWalletAndWitness(newAllOutputTxs, oldOutputTxTopIndex - 1,'output')
 
-                #### 增加是否截取最新 outputtxs ，否则旧 output 会有影响
-                reward(newAllOutputTxs[0:oldOutputTxTopIndex - 1], newMatchBet)      #由于新的匹配交易，不可能已经被支付过，所以reward第一个参数为空
+                                reward(newAllOutputTxs[0:oldOutputTxTopIndex - 1], newMatchBet)      #重新启动避免重复发放奖励
+                        doItOnce = False
 
+                reward([], newMatchBet)#非重启，则新匹配的交易，不可能已经被支付过，所以reward第一个参数为空
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)
                 del(newMatchBet[:])
