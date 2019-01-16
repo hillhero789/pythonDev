@@ -20,7 +20,7 @@ newMatchBet = []
 newAllInputTxs = []     #获取最新输入交易 [wallet, 见证块哈希，数量，时间]                               新数据在前，旧数据在后
 newAllOutputTxs = []    #获取最新输出交易 [wallet, 见证块哈希，数量，时间]  
 
-WALLETADDR = 'rNjmn9TPaAWpePMcQZkA0sSDxYUgUaD+'       
+WALLETADDR = 'fKVvnRLb163cw+W0kIjlJxMIp44yirQZ'       
 
 def getXdagRpcJson(url, body, attemptTimes = 20):
         errorCounter = 0
