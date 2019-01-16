@@ -192,11 +192,12 @@ def reward(paraOutputTxs, paraMatchBet):#获取所有output交易，判断是否
                         except ValueError:
                                 doXfer(tmpWalletAddr, float(paraMatchBet[i+2])*2*(1-fee))
 
+
 def doXfer(walletAddr, amount, url = 'http://127.0.0.1:8878'):        #向胜利者发送XDAG       成功返回交易哈希，失败返回None
         #print('In doXfer') #debug
         #url = 'http://127.0.0.1:8888'
         body = {"method":"xdag_do_xfer", "params":[{"amount":'%.9f'%(amount), "address":walletAddr, "remark":"REMARK"}], "id":1}
-        resultJson = getXdagRpcJson(url, body, 1)
+        resultJson = getXdagRpcJson(url, body, 2)
         if resultJson is not None:
                 ret = resultJson['result'][0]['block']
                 del(resultJson)
@@ -209,6 +210,7 @@ def doXfer(walletAddr, amount, url = 'http://127.0.0.1:8878'):        #向胜利
                 print(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(amount)+' to '+ walletAddr +'!')
                 log(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(amount)+' to '+ walletAddr +'!')
                 return None
+        time.sleep(5)           #防止连续转账出异常。
 
 
 def calTxVal(paraTxHash):#计算传输哈希值
