@@ -319,8 +319,9 @@ while True:#需增加是否达到1000笔交易的上限，如达到，暂停
 
                                 reward(newAllOutputTxs[0:oldOutputTxTopIndex - 1], newMatchBet)      #重新启动避免重复发放奖励
                         doItOnce = False
-
-                reward([], newMatchBet)#非重启，则新匹配的交易，不可能已经被支付过，所以reward第一个参数为空
+                else:
+                        reward([], newMatchBet)#非重启，则新匹配的交易，不可能已经被支付过，所以reward第一个参数为空
+                        
                 for newMatchBetItem in newMatchBet:     #向matchBet列表增加新元素，但是只保留最近30个，新元素在后，老元素在前
                         matchBet.append(newMatchBetItem)
                 del(newMatchBet[:])
