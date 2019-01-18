@@ -51,6 +51,7 @@ header = """
 <h6>1、挂单：转入<strong>不等于</strong>挂单列表数量的XDAG，<span style="color:#D20000">大约每1小时，前10个挂单者将获得系统自动转出的挂单数额0.1%的奖励</span>（奖励每小时不多于1XDAG）。
 <br>2、吃单：转入<strong>等于</strong>挂单列表数量的XDAG，如转账后生成的ID数字和与挂单的ID数字和相加值为<span style="color:#D20000">偶数</span>，则立即获得两倍数额的XDAG，否则挂单者获得两倍数额的XDAG
 <br>3、ID数字和：将传输区块中 “FEE” 地址中的所有 <b>数字</b> 进行 <b>累加</b> 即可得到
+<br>4、每小时发放奖励钱包：<a href="https://explorer.xdag.io/block/5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub">5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub</a>
 <br>
 <br><a href="ruleExample.html">游戏规则示例</a></h6>
   </div>

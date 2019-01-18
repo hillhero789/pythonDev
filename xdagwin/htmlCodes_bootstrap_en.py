@@ -51,6 +51,7 @@ header_en = """
 <h6>1、Maker：Transfer any amount of XDAG to game wallet that <strong>not equal</strong> to any of the amount on the list. <span style="color:#D20000">Every hour, top 10 makers will get 0.1% profits.</span>(no more than 1 XDAG per hour).
 <br>2、Taker：Transfer an amount of XDAG that <strong>equal</strong> to the amount on the list. If the the sum of the two "ID digit sum" is an even number, you can earn double amount of XDAG, or the maker get double amount of XDAG.
 <br>3、ID digit sum：The sum of all the digit of "FEE" address in the transaction blcok which you generated when transfer XDAG to the game wallet.
+<br>4、Reward wallet(every hour): <a href="https://explorer.xdag.io/block/5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub">5bZTk49XoZ6E7SqC3TXwatlnWfYpSbub</a>
 <br>
 <br><a href="ruleExample.html">An example of game rules</a></h6>
   </div>

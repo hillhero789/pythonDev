@@ -211,7 +211,6 @@ def doXfer(walletAddr, amount, url = 'http://127.0.0.1:8878'):        #向胜利
                 print(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(amount)+' to '+ walletAddr +'!')
                 log(str(datetime.datetime.now()) + ' xfer ERROR: Need to xfer ' +'%.9f'%(amount)+' to '+ walletAddr +'!')
                 return None
-        time.sleep(5)           #防止连续转账出异常。
 
 
 def calTxVal(paraTxHash):#计算传输哈希值
@@ -230,7 +229,7 @@ def refreshPage(paraUnmatchBet, paraMatchBet):
 
         for i in range(len(paraMatchBet)-4, max(-1,len(paraMatchBet)-84),-4):   
                 if paraMatchBet[i+3] == 'winner':
-                        tdHtml = r'<td style = "color:#D20000">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r' XDAG</td>'
+                        tdHtml = r'<td style = "color:#D20000">Win '+ '%.9f'%(float(paraMatchBet[i+2])*2*(1-fee)) +r'</td>'
                 else:
                         tdHtml = r'<td>lose</td>'
                 matchBetTalbeBody = matchBetTalbeBody + r'<tr>' + tdHtml + r'<td>' + paraMatchBet[i+2] + r'</td><td>' + str(calTxVal(paraMatchBet[i+1])) + r'</td><td>' + paraMatchBet[i+1] + r'</td><td>' + paraMatchBet[i] + r'</td></tr>'
